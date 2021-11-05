@@ -10,6 +10,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "entryPoint": "src/App",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
