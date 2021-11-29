@@ -8,6 +8,7 @@ interface IWish {
   description: string;
   image: string;
   state: number;
+  claimedBy: string;
 }
 
 const collectionName = 'wishlist';
