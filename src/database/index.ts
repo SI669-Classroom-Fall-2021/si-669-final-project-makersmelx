@@ -1,6 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app';
 import { initializeFirestore } from 'firebase/firestore';
-import { firebaseConfig } from '../secret';
+import firebaseConfig from '../secret';
 
 let app;
 if (getApps().length === 0) {
