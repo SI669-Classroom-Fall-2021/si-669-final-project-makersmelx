@@ -12,4 +12,6 @@ const database = initializeFirestore(app, {
   useFetchStreams: false,
 });
 
+export const collectionName = 'users';
+
 export default database;
