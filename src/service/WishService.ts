@@ -12,11 +12,17 @@ interface IWish {
   url: string;
   description: string;
   image: string;
-  state: number;
+  state: WishState;
   claimedBy?: string;
 }
 
-const subCollectionOfUser = 'wishlist';
+enum WishState {
+  Default = 0,
+  Claimed = 1,
+  Completed = 2
+}
+
+const subCollectionOfUser = 'wish';
 
 export default {
   /**
@@ -49,4 +55,8 @@ export default {
       itemID);
     await deleteDoc(userDoc);
   },
+  getWishRef(userID: string, itemID: string) {
+    return doc(database, collectionName, userID, subCollectionOfUser, itemID);
+  },
+  WishState,
 };
