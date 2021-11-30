@@ -18,6 +18,7 @@ const subCollectionOfUser = 'claim';
 
 export default {
   async claimWish(userID: string, friendID: string, wishID: string) {
+    // todo: validate user and friend are friends
     const wishRef = WishService.getWishRef(friendID, wishID);
     const batch = writeBatch(database);
     batch.update(wishRef, { state: 1, claimed: userID });
