@@ -3,7 +3,8 @@ import {
   collection,
   deleteDoc,
   doc,
-  updateDoc
+  updateDoc,
+  onSnapshot,
 } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 
@@ -57,6 +58,9 @@ export default {
   },
   getWishRef(userID: string, itemID: string) {
     return doc(database, collectionName, userID, subCollectionOfUser, itemID);
+  },
+  onSnapShot(onNext: any) {
+    return onSnapshot(collection(database, collectionName), onNext);
   },
   WishState,
 };
