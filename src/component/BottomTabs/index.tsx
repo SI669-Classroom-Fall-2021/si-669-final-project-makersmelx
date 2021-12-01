@@ -17,7 +17,7 @@ interface IBottomTab {
 const BottomTabView: React.FC<IBottomTabView> = ({ children }) => <>{children}</>;
 
 const Index: React.FC<IBottomTab> = ({ children, tabStyle, viewStyle }) => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(0);
   const tabViews = <Center style={viewStyle}>{React.Children.toArray(children)[selected]}</Center>;
   const tabs = React.Children.map(children, (child, index) => {
     const c = child as ReactElement<IBottomTabView>;
