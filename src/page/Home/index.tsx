@@ -1,19 +1,9 @@
 import React, { useLayoutEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
+import { Box, Icon, Text } from 'native-base';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BottomTabs, { BottomTabView } from '../../component/BottomTabs';
-import { AuthService } from '../../service';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
@@ -23,26 +13,19 @@ const Index: React.FC = () => {
     });
   }, [navigation]);
   return (
-    <View style={styles.container}>
+    <Box flex={1}>
       <Text>Open up App.tsx to start working on your app!</Text>
       <BottomTabs>
-        <BottomTabView title="My Wish">
+        <BottomTabView
+          icon={<Icon mb="1" as={<MaterialCommunityIcons name="home-outline" />} color="white" size="sm" />}
+          iconSelected={<Icon mb="1" as={<MaterialCommunityIcons name="home" />} color="white" size="sm" />}
+          title={
+            <Text color="white" fontSize="12">
+              Home
+            </Text>
+          }
+        >
           <Text>My Wish</Text>
-          <Button
-            onPress={async () => {
-              await AuthService.signUp('makersmelx@gmail.com', '123456');
-            }}
-            title="Sign Up"
-          />
-        </BottomTabView>
-        <BottomTabView title="Claimed">
-          <Text>heyhey</Text>
-          <Button
-            onPress={async () => {
-              await AuthService.signIn('makersmelx@gmail.com', '123456');
-            }}
-            title="Login"
-          />
         </BottomTabView>
         <BottomTabView title="Friends">
           <Text>heyhey234</Text>
@@ -52,7 +35,7 @@ const Index: React.FC = () => {
         </BottomTabView>
       </BottomTabs>
       <StatusBar />
-    </View>
+    </Box>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { registerRootComponent } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeBaseProvider } from 'native-base';
 import Home from './page/Home';
 import { AuthService } from './service';
 
@@ -13,9 +14,11 @@ const Index: React.FC = () => {
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-      </Stack.Navigator>
+      <NativeBaseProvider>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Home} />
+        </Stack.Navigator>
+      </NativeBaseProvider>
     </NavigationContainer>
   );
 };
