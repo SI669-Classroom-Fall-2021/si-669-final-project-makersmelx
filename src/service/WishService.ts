@@ -1,17 +1,28 @@
-import { deleteField, doc, updateDoc } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
-import database from '../database';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc
+} from 'firebase/firestore';
+import database, { collectionName } from '../database';
 
 interface IWish {
   name: string;
   url: string;
   description: string;
   image: string;
-  state: number;
+  state: WishState;
   claimedBy?: string;
 }
 
-const collectionName = 'wishlist';
+enum WishState {
+  Default = 0,
+  Claimed = 1,
+  Completed = 2
+}
+
+const subCollectionOfUser = 'wish';
 
 export default {
   /**
@@ -19,33 +30,33 @@ export default {
    * @param userID
    */
   async add(item: IWish, userID: string) {
-    const userDoc = doc(database, collectionName, userID);
-    const itemID = uuidv4();
-    await updateDoc(userDoc, {
-      [itemID]: item,
-    });
+    const collectionRef = collection(database, collectionName, userID,
+      subCollectionOfUser);
+    await addDoc(collectionRef, item);
   },
   /**
    *
    * @param newItem
-   * @param itemID
    * @param userID
+   * @param itemID
    */
-  async update(newItem: IWish, itemID: string, userID: string) {
-    const userDoc = doc(database, collectionName, userID);
-    await updateDoc(userDoc, {
-      [itemID]: newItem,
-    });
+  async update(newItem: IWish, userID: string, itemID: string) {
+    const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
+      itemID);
+    await updateDoc(userDoc, newItem);
   },
   /**
    *
-   * @param itemID
    * @param userID
+   * @param itemID
    */
-  async delete(itemID: string, userID: string) {
-    const userDoc = doc(database, collectionName, userID);
-    await updateDoc(userDoc, {
-      [itemID]: deleteField(),
-    });
+  async delete(userID: string, itemID: string) {
+    const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
+      itemID);
+    await deleteDoc(userDoc);
   },
+  getWishRef(userID: string, itemID: string) {
+    return doc(database, collectionName, userID, subCollectionOfUser, itemID);
+  },
+  WishState,
 };

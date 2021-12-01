@@ -1,8 +1,12 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import database from '../database';
+import { doc, writeBatch } from 'firebase/firestore';
+import database, { collectionName } from '../database';
 
-const collectionName = 'friend';
-const fieldName = 'friend';
+const subCollectionOfUser = 'friend';
+
+interface IFriend {
+  friendRef: any;
+  // todo: help wish count
+}
 
 export default {
   /**
@@ -10,10 +14,16 @@ export default {
    * @param userID
    */
   async add(friendID: string, userID: string) {
-    const userDoc = doc(database, collectionName, userID);
-    await updateDoc(userDoc, {
-      [fieldName]: arrayUnion(friendID),
-    });
+    const batch = writeBatch(database);
+    const friendRef = doc(database, collectionName, friendID);
+    const userRef = doc(database, collectionName, userID);
+    batch.set(doc(userRef, subCollectionOfUser, friendID), {
+      friendRef,
+    } as IFriend);
+    batch.set(doc(friendRef, subCollectionOfUser, userID), {
+      friendRef: userRef,
+    } as IFriend);
+    await batch.commit();
   },
   /**
    *
@@ -21,9 +31,11 @@ export default {
    * @param userID
    */
   async delete(friendID: string, userID: string) {
-    const userDoc = doc(database, collectionName, userID);
-    await updateDoc(userDoc, {
-      [fieldName]: arrayRemove(friendID),
-    });
+    const batch = writeBatch(database);
+    const friendRef = doc(database, collectionName, friendID);
+    const userRef = doc(database, collectionName, userID);
+    batch.delete(doc(userRef, subCollectionOfUser, friendID));
+    batch.delete(doc(friendRef, subCollectionOfUser, userID));
+    await batch.commit();
   },
 };
