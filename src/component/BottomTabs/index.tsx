@@ -30,7 +30,9 @@ const Index: React.FC<IBottomTab> = ({ children, tabStyle, viewStyle }) => {
   });
   return (
     <>
-      <TabView value={active - 1}>{tabViews}</TabView>
+      <TabView value={active - 2} onChange={setActive}>
+        {tabViews}
+      </TabView>
       <Tab value={active} onChange={setActive}>
         {tabs}
       </Tab>
