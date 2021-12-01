@@ -15,5 +15,6 @@ web-build/
 
 .idea
 .vsconfig
+.vscode/
 
 [Ss]ecret.*
