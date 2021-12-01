@@ -3,8 +3,8 @@ import {
   collection,
   deleteDoc,
   doc,
-  updateDoc,
   onSnapshot,
+  updateDoc
 } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 
@@ -13,8 +13,11 @@ interface IWish {
   url: string;
   description: string;
   image: string;
+  price: string;
+  createdAt: any;
   state: WishState;
   claimedBy?: string;
+  completedBy?: any;
 }
 
 enum WishState {
@@ -60,12 +63,14 @@ export default {
     return doc(database, collectionName, userID, subCollectionOfUser, itemID);
   },
   /**
-   *
-   * @param paths paths starting from the overall collection, like ['user id', 'wish','wish id']
+   * Subscribe the collection of a user's wishes
+   * @param userID
    * @param onNext
    */
-  onSnapShot(paths: string[], onNext: any) {
-    return onSnapshot(collection(database, collectionName, ...paths), onNext);
+  onSnapshotUserWish(userID: string, onNext: any) {
+    return onSnapshot(
+      collection(database, collectionName, userID, subCollectionOfUser),
+      onNext);
   },
   WishState,
 };
