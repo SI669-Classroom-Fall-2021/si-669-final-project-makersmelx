@@ -59,8 +59,13 @@ export default {
   getWishRef(userID: string, itemID: string) {
     return doc(database, collectionName, userID, subCollectionOfUser, itemID);
   },
-  onSnapShot(onNext: any) {
-    return onSnapshot(collection(database, collectionName), onNext);
+  /**
+   *
+   * @param paths paths starting from the overall collection, like ['user id', 'wish','wish id']
+   * @param onNext
+   */
+  onSnapShot(paths: string[], onNext: any) {
+    return onSnapshot(collection(database, collectionName, ...paths), onNext);
   },
   WishState,
 };
