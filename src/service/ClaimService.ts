@@ -1,4 +1,4 @@
-import { collection, doc, writeBatch } from 'firebase/firestore';
+import { collection, doc, onSnapshot, writeBatch } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 import WishService from './WishService';
 
@@ -51,8 +51,16 @@ export default {
     const claimRef = doc(database, collectionName, userID, subCollectionOfUser, claimID);
     const wishRef = WishService.getWishRef(friendID, wishID);
     const batch = writeBatch(database);
-    batch.update(wishRef, { state: WishService.WishState.Completed });
+    batch.update(wishRef, { state: WishService.WishState.Completed, completedAt: new Date() });
     batch.update(claimRef, { state: ClaimState.Completed, completedAt: new Date() });
     await batch.commit();
+  },
+  /**
+   * Subscribe the collection of a user's wishes
+   * @param userID
+   * @param onNext
+   */
+  onSnapshotUserClaim(userID: string, onNext: any) {
+    return onSnapshot(collection(database, collectionName, userID, subCollectionOfUser), onNext);
   },
 };

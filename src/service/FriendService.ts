@@ -1,4 +1,4 @@
-import { doc, writeBatch } from 'firebase/firestore';
+import { collection, doc, onSnapshot, writeBatch } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 
 const subCollectionOfUser = 'friend';
@@ -37,5 +37,15 @@ export default {
     batch.delete(doc(userRef, subCollectionOfUser, friendID));
     batch.delete(doc(friendRef, subCollectionOfUser, userID));
     await batch.commit();
+  },
+  /**
+   * Subscribe the collection of a user's friends
+   * @param userID
+   * @param onNext
+   */
+  onSnapshotUserFriend(userID: string, onNext: any) {
+    return onSnapshot(
+      collection(database, collectionName, userID, subCollectionOfUser),
+      onNext);
   },
 };
