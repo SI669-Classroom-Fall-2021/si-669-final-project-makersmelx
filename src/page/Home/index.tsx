@@ -16,10 +16,11 @@ const Index: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   let unsubscriber;
   const onNext = (snapshot: any) => {
-    console.log(snapshot);
+    console.log(snapshot.docs);
   };
   useEffect(() => {
-    unsubscriber = WishService.onSnapShot([], onNext);
+    unsubscriber = WishService.onSnapShot(
+      ['1', WishService.subCollectionOfUser], onNext);
   }, []);
   return (
     <Box flex={1}>

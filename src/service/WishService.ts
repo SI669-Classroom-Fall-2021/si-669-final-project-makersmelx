@@ -68,4 +68,5 @@ export default {
     return onSnapshot(collection(database, collectionName, ...paths), onNext);
   },
   WishState,
+  subCollectionOfUser
 };
