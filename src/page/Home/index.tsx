@@ -18,7 +18,7 @@ const Index: React.FC = () => {
     console.log(snapshot);
   };
   useEffect(() => {
-    unsubscriber = WishService.onSnapShot([], onNext);
+    unsubscriber = WishService.onSnapshotUserWish('1', onNext);
   }, []);
   return (
     <Box flex={1}>

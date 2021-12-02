@@ -1,4 +1,4 @@
-import { getApps, initializeApp } from 'firebase/app';
+import { FirebaseApp, getApps, initializeApp } from 'firebase/app';
 import {
   collection,
   initializeFirestore,
@@ -11,10 +11,7 @@ if (getApps().length === 0) {
   app = initializeApp(firebaseConfig);
 }
 
-// @ts-ignore
-const database = initializeFirestore(app, {
-  useFetchStreams: false,
-});
+const database = initializeFirestore(app as FirebaseApp, {});
 
 export const collectionName = 'users';
 /**
