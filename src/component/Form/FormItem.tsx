@@ -15,13 +15,13 @@ interface IItem {
 }
 
 const Index: React.FC<IItem> = ({
-                                  children,
-                                  name,
-                                  label,
-                                  defaultValue,
-                                  helperText,
-                                  rules,
-                                }) => {
+  children,
+  name,
+  label,
+  defaultValue,
+  helperText,
+  rules,
+}) => {
   const formContext = useFormContext();
   const { control, formState: { errors } } = formContext;
   if (!name) {
@@ -37,16 +37,16 @@ const Index: React.FC<IItem> = ({
   const helperTextComponent = helperText &&
     <FormControl.HelperText>{helperText}</FormControl.HelperText>;
   const restChildren = React.Children.toArray(children).slice(1);
-  const textComponent = errors[name]
-    ? <FormControl.HelperText _text={{ color: 'error.500' }}>
-      {errors[name].message}
-    </FormControl.HelperText>
-    : helperTextComponent;
+  const errorTextComponent = errors[name] ? (
+    <FormControl.HelperText
+      _text={{ color: 'error.500' }}>{errors[name].message}</FormControl.HelperText>
+  ) : null;
   return (
     <FormControl isRequired={rules?.required as boolean}>
       <FormControl.Label>{label}</FormControl.Label>
       {firstChild}
-      {textComponent}
+      {errorTextComponent}
+      {helperTextComponent}
       {restChildren}
     </FormControl>
   );
