@@ -16,7 +16,7 @@ const Index: React.FC = () => {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <Stack.Navigator initialRouteName="SignUp">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="SignUp" component={SignUp} />
         </Stack.Navigator>
