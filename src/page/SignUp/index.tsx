@@ -1,30 +1,37 @@
 import React from 'react';
-import { Box, Button, Center, Column, FormControl, Heading, Input } from 'native-base';
+import { Box, Center, Checkbox, Heading, Input } from 'native-base';
+import Form, { FormItem } from '../../component/Form';
 
 const Index: React.FC = () => (
   <Center flex={1}>
-    <Box safeArea w="90%">
+    <Box safeArea width="90%">
       <Heading>Sign Up</Heading>
       <Heading>Explain</Heading>
-      <Column>
-        <FormControl>
-          <FormControl.Label>Username</FormControl.Label>
+      <Form
+        space={8}
+        submitButton="Sign Up"
+        onFinish={(value) => {
+          console.log(value);
+        }}
+        onError={(error) => {
+          console.error(error);
+        }}
+      >
+        <FormItem
+          name="username"
+          label="Username"
+          defaultValue=""
+          rules={{
+            required: 'Username is required',
+          }}
+          helperText={['1', '2', '3']}
+        >
           <Input />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Email</FormControl.Label>
-          <Input />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Password</FormControl.Label>
-          <Input />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Confirm Password</FormControl.Label>
-          <Input />
-        </FormControl>
-        <Button>Sign Up</Button>
-      </Column>
+        </FormItem>
+        <FormItem name="usernameTest" label="Username" defaultValue={false}>
+          <Checkbox value="test" />
+        </FormItem>
+      </Form>
     </Box>
   </Center>
 );
