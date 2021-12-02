@@ -1,7 +1,6 @@
-import React, { useLayoutEffect, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Box, Icon, Text } from 'native-base';
+import { Box, Button, Icon, Text } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BottomTabs, { BottomTabView } from '../../component/BottomTabs';
 import { WishService } from '../../service';
@@ -26,35 +25,32 @@ const Index: React.FC = () => {
       <Text>Open up App.tsx to start working on your app!</Text>
       <BottomTabs>
         <BottomTabView
-          icon={
-            <Icon
-              mb='1'
-              as={<MaterialCommunityIcons name='home-outline' />}
-              color='white'
-              size='sm' />
-          }
-          iconSelected={
-            <Icon
-              mb='1'
-              as={<MaterialCommunityIcons name='home' />}
-              color='white'
-              size='sm' />}
+          icon={<Icon mb="1" as={<MaterialCommunityIcons name="home-outline" />}
+                      color="white" size="sm" />}
+          iconSelected={<Icon mb="1" as={<MaterialCommunityIcons name="home" />}
+                              color="white" size="sm" />}
           title={
-            <Text color='white' fontSize='12'>
+            <Text color="white" fontSize="12">
               Home
             </Text>
           }
         >
           <Text>My Wish</Text>
+          <Button
+            onPress={() => {
+              navigation.navigate('SignUp' as never, {} as never);
+            }}
+          >
+            Sign Up
+          </Button>
         </BottomTabView>
-        <BottomTabView title='Friends'>
+        <BottomTabView title="Friends">
           <Text>heyhey234</Text>
         </BottomTabView>
-        <BottomTabView title='Profile'>
+        <BottomTabView title="Profile">
           <Text>heyhey2345</Text>
         </BottomTabView>
       </BottomTabs>
-      <StatusBar />
     </Box>
   );
 };
