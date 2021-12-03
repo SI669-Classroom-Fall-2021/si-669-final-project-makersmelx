@@ -40,6 +40,7 @@ const Index: React.FC = () => {
           status: 'error',
           id: loginFailToast,
           placement: 'top',
+          duration: 3000,
         });
       },
     },
