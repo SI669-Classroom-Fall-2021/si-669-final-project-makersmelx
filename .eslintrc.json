@@ -50,6 +50,7 @@
     "react/require-default-props": 0,
     "react/no-unused-prop-types": 0,
     "@typescript-eslint/no-explicit-any": 0,
-    "jsx-a11y/anchor-is-valid": 0
+    "jsx-a11y/anchor-is-valid": 0,
+    "@typescript-eslint/no-explicit-any": 0
   }
 }
