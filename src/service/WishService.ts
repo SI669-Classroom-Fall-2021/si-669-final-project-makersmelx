@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 
-interface IWish {
+export interface IWish {
   name: string;
   url: string;
   description: string;
@@ -18,6 +18,7 @@ interface IWish {
   state: WishState;
   claimedBy?: string;
   completedBy?: any;
+  key: string;
 }
 
 enum WishState {
@@ -73,4 +74,5 @@ export default {
       onNext);
   },
   WishState,
+  subCollectionOfUser
 };
