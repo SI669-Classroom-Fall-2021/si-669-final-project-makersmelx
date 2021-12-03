@@ -52,7 +52,7 @@ const Index: React.FC = () => {
         <Box mt={8}>
           <Form
             space={6}
-            submitButton={<Button _loading={loading}>Sign In</Button>}
+            submitButton={<Button isLoading={loading}>Sign In</Button>}
             onFinish={run}
           >
             <FormItem
