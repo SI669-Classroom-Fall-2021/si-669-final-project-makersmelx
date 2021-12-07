@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Home from './page/Home';
 import SignUp from './page/SignUp';
 import SignIn from './page/SignIn';
+import Edit from './page/WishList/edit';
 import { AuthService } from './service';
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,8 @@ const Index: React.FC = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="Edit" component={Edit} />
+      <></>
     </Stack.Navigator>
   );
 };
