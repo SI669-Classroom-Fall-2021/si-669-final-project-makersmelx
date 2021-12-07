@@ -1,6 +1,6 @@
 import React, { cloneElement, ReactElement } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Button, Column } from 'native-base';
+import { Button, Column, KeyboardAvoidingView, ScrollView } from 'native-base';
 import FormItem from './FormItem';
 
 interface IForm {
@@ -23,10 +23,14 @@ const Index: React.FC<IForm> = ({ children, onFinish, onError, space, submitButt
     ));
   return (
     <FormProvider {...formMethods}>
-      <Column space={space}>
-        {children}
-        {button}
-      </Column>
+      <KeyboardAvoidingView behavior="position">
+        <ScrollView>
+          <Column space={space}>
+            {children}
+            {button}
+          </Column>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </FormProvider>
   );
 };

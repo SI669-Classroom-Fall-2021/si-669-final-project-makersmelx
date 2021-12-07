@@ -1,10 +1,12 @@
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  NextOrObserver,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  User,
 } from 'firebase/auth';
 
 const auth = getAuth();
@@ -22,8 +24,8 @@ export default {
   async signOut() {
     await signOut(auth);
   },
-  subscribeAuth: onAuthStateChanged(auth, (user) => {
-    console.log(user);
-  }),
+  subscribeAuth(nextObserver: NextOrObserver<User>) {
+    return onAuthStateChanged(auth, nextObserver);
+  },
   auth,
 };

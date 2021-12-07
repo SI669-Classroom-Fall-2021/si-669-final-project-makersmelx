@@ -13,12 +13,19 @@ const Index = React.forwardRef(
           setVisible(!visible);
         }}
       >
-        <Icon as={<MaterialIcons name={iconName} />} size={5} mr="2"
-              color="muted.400" />
+        <Icon
+          as={<MaterialIcons name={iconName} />}
+          size={5}
+          mr="2"
+          color="muted.400"
+        />
       </Pressable>
     );
-    return <Input ref={ref} {...props} type={type}
-                  InputRightElement={rightIcon} />;
+    return <Input
+      ref={ref} {...props}
+      type={type}
+      InputRightElement={rightIcon}
+    />;
   });
 
 export default Index;
