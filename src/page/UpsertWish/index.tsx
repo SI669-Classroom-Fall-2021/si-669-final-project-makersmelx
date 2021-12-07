@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { Box, Center, Input, TextArea } from 'native-base';
 import Form, { FormItem } from '../../component/Form';
-import { WishService, IWish } from '../../service/index';
+import { IWish, WishService } from '../../service/index';
 
-const userId = "1"
+const userId = '1';
 
-function Edit({ route, navigation}:{route:any;navigation:any}) {
-  const {content, mode }: {content: IWish; mode:string}= route.params;
+function Edit({ route, navigation }: { route: any; navigation: any }) {
+  const { content, mode }: { content: IWish; mode: string } = route.params;
   const [inputName, setInputName] = useState(content ? content.name : '');
   const [inputLink, setInputLink] = useState(content ? content.url : '');
   const [inputDescription, setInputDescription] = useState(content ? content.description : '');
@@ -20,16 +20,16 @@ function Edit({ route, navigation}:{route:any;navigation:any}) {
           space={8}
           submitButton={mode === 'edit' ? 'Update Item' : 'Add to Wishlist'}
           onFinish={() => {
-            if (mode === 'edit'){
-              const newItem:IWish = content;
+            if (mode === 'edit') {
+              const newItem: IWish = content;
               newItem.name = inputName;
               newItem.url = inputLink;
               newItem.description = inputDescription;
-              newItem.createdAt =  Date.now();
+              newItem.createdAt = Date.now();
               WishService.update(newItem, userId, newItem.key);
               navigation.navigate('Home');
-            }else{
-              const newItem:IWish = {
+            } else {
+              const newItem: IWish = {
                 name: inputName,
                 url: inputLink,
                 description: inputDescription,
@@ -37,13 +37,11 @@ function Edit({ route, navigation}:{route:any;navigation:any}) {
                 price: inputPrice,
                 createdAt: Date.now(),
                 state: WishService.WishState.Default,
-                key: Math.random().toString(36).substring(7)
-              }
-              WishService.add(newItem,userId);
+                key: Math.random().toString(36).substring(7),
+              };
+              WishService.add(newItem, userId);
               navigation.navigate('Home');
             }
-            
-             
           }}
           onError={(error) => {
             console.error(error);
