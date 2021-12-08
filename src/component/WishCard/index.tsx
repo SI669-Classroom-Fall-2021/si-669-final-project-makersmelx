@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  Box,
-  Center,
-  Column,
-  Pressable,
-  Row,
-  Text,
-  useTheme
-} from 'native-base';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
-import { IWish, WishService } from '../../service';
+import { Box, Center, Column, Pressable, Row, Text } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
+import { IWish } from '../../service';
 import ItemImage from './ItemImage';
+import ClaimBadge from './ClaimBadge';
 
 const textProps = {
   color: 'coolGray.600',
@@ -19,55 +11,12 @@ const textProps = {
     color: 'warmGray.200',
   },
 };
-const Index: React.FC<{ content: IWish; userID: string; navigation: any }> = ({
-  content,
-  userID,
-  navigation
-}) => {
-  const theme = useTheme();
-  const claimedBadge = () => {
-    switch (content.state) {
-      case WishService.WishState.Claimed: {
-        return (
-          <Text textAlign="left">
-            <MaterialCommunityIcons
-              name="check"
-              color="green"
-              size={16}
-            > Claimed</MaterialCommunityIcons>
-          </Text>
-        );
-      }
-      case WishService.WishState.Completed: {
-        return (
-          <Text textAlign="right">
-            <MaterialCommunityIcons
-              name="gift-open"
-              color="gray"
-              size={16}
-            > Completed</MaterialCommunityIcons>
-          </Text>
-        );
-      }
-      case WishService.WishState.Default:
-      default: {
-        return (
-          <Text textAlign="right">
-            <MaterialCommunityIcons
-              name="dots-horizontal"
-              color={theme.colors.primary['500']}
-              size={16}
-            > Not Yet</MaterialCommunityIcons>
-          </Text>
-        );
-      }
-    }
-  };
+const Index: React.FC<{ content: IWish }> = ({ content }) => {
+  const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate(
-          'UpsertWish' as never, { content, mode: 'edit' } as never);
+        navigation.navigate('UpsertWish' as never, { content, mode: 'edit' } as never);
       }}
     >
       <Box
@@ -88,22 +37,11 @@ const Index: React.FC<{ content: IWish; userID: string; navigation: any }> = ({
         }}
       >
         <Center flex={1}>
-          <Row
-            alignItems="center"
-            space={4}
-            py="10px"
-            justifyContent="space-between"
-            width="95%"
-          >
+          <Row alignItems="center" space={4} py="10px" justifyContent="space-between" width="95%">
             <Column flex={0.6}>
               <ItemImage content={content} />
             </Column>
-            <Column
-              flex={2}
-              alignItems="flex-start"
-              space={2}
-              justifyContent="center"
-            >
+            <Column flex={2} alignItems="flex-start" space={2} justifyContent="center">
               <Text fontWeight="600" textAlign="left" {...textProps}>
                 {content.name}
               </Text>
@@ -112,7 +50,7 @@ const Index: React.FC<{ content: IWish; userID: string; navigation: any }> = ({
               </Text>
             </Column>
             <Row flex={1} justifyContent="flex-end">
-              {claimedBadge()}
+              <ClaimBadge content={content} />
             </Row>
           </Row>
         </Center>
