@@ -1,15 +1,15 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import List from './list';
-import Edit from './edit';
+import WishList from './WishList';
+import UpsertWish from './UpsertWish';
 
-const WishStack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 
-const WishList = () => (
-    <WishStack.Navigator screenOptions={{ presentation: 'modal' }} initialRouteName="List">
-      <WishStack.Screen name="list" component={List} />
-      <WishStack.Screen name="edit" component={Edit} />
-    </WishStack.Navigator>
+const Index: React.FC = () => (
+    <Stack.Navigator initialRouteName="WishList">
+      <Stack.Screen name="WishList" component={WishList} />
+      <Stack.Screen name="UpsertWish" component={UpsertWish} />
+    </Stack.Navigator>
   );
 
-export default WishList;
+export default Index;

@@ -1,17 +1,21 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import React, { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Box, Button, Icon, Text } from 'native-base';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import BottomTabs, { BottomTabView } from '../../component/BottomTabs';
 // import { WishService } from '../../service';
-import List from '../WishList/list'
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
+import WishListStack from '../WishList';
+import Friends from '../Friends';
+import Claimed from '../Claimed';
+import Settings from '../Settings';
+
+const Tab = createMaterialBottomTabNavigator();
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Test Test',
+      headerShown: false,
     });
   }, [navigation]);
   // eslint-disable-next-line no-unused-vars
@@ -23,37 +27,67 @@ const Index: React.FC = () => {
   //   unsubscriber = WishService.onSnapShot([], onNext);
   // }, []);
   return (
-    <Box flex={1}>
-      <BottomTabs viewStyle={{height: '100%', width: '100%'}}>
-        <BottomTabView
-          icon={<Icon mb="1" as={<MaterialCommunityIcons name="home-outline" />}
-                      color="white" size="sm" />}
-          iconSelected={<Icon mb="1" as={<MaterialCommunityIcons name="home" />}
-                              color="white" size="sm" />}
-          title={
-            <Text color="white" fontSize="12">
-              Home
-            </Text>
-          }
-        >
-          <Text>My Wish</Text>
-          <Button
-            onPress={() => {
-              navigation.navigate('SignUp' as never, {} as never);
-            }}
-          >
-            Sign Up
-          </Button>
-        </BottomTabView>
-        <BottomTabView title="Friends">
-          <Text>heyhey234</Text>
-          <List />
-        </BottomTabView>
-        <BottomTabView title="Profile">
-          <Text>heyhey2345</Text>
-        </BottomTabView>
-      </BottomTabs>
-    </Box>
+    <Tab.Navigator
+      activeColor="rgb(8,145,178)"
+      barStyle={{ backgroundColor: 'white' }}
+    >
+      <Tab.Screen
+        name="WishListStack"
+        component={WishListStack}
+        options={{
+          tabBarLabel: 'Wish List',
+          tabBarIcon: (props: any) => <MaterialCommunityIcons
+            name={props.focused ? 'gift' : 'gift-outline'}
+            color={props.color}
+            size={26}
+          />
+        }}
+      />
+      <Tab.Screen
+        name="Claimed"
+        component={Claimed}
+        options={{
+          tabBarLabel: 'Claimed',
+          tabBarIcon: (props: any) => (
+            <MaterialCommunityIcons
+              name={props.focused ? 'bookmark-check' : 'bookmark-check-outline'}
+              color={props.color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Friends"
+        component={Friends}
+        options={{
+          tabBarLabel: 'Friends',
+          tabBarIcon: (props: any) => (
+            <MaterialCommunityIcons
+              name={props.focused
+                ? 'account-multiple'
+                : 'account-multiple-outline'}
+              color={props.color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: (props: any) => (
+            <MaterialCommunityIcons
+              name={props.focused ? 'cog' : 'cog-outline'}
+              color={props.color}
+              size={26}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
