@@ -1,38 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, FlatList } from 'native-base';
+import React, { useLayoutEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { IWish, WishService } from '../../service/index';
-import WishCard from '../../component/WishCard';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
+import WishList from './WishList';
+import UpsertWish from './UpsertWish';
 
-const userID = '1';
+const Stack = createNativeStackNavigator();
+
 const Index: React.FC = () => {
-  const [wishList, setWishList] = useState<IWish[]>([]);
-  useEffect(() => {
-    WishService.onSnapshotUserWish(userID, (qSnap: { docs: any[] }) => {
-      const updateList: IWish[] = [];
-      qSnap.docs.forEach((doc: { data: () => any; id: any }) => {
-        const wishItemTmp = doc.data();
-        wishItemTmp.key = doc.id;
-        updateList.push(wishItemTmp);
-      });
-      setWishList(updateList);
-    });
-  }, []);
   const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      tabBarLabel: 'Wish List',
+      tabBarIcon: (props: any) => <MaterialCommunityIcons
+        name="gift"
+        color={props.color}
+        size={26}
+      />,
+    });
+  });
   return (
-    <Box style={{ width: '80%', height: '100%' }}>
-      <Button
-        onPress={() => {
-          navigation.navigate('UpsertWish' as never, { content: null, mode: 'add' } as never);
-        }}
-      >
-        Add item
-      </Button>
-      <FlatList
-        data={wishList}
-        renderItem={({ item }) => <WishCard content={item} userID={userID} navigation={navigation} />}
-      />
-    </Box>
+    <Stack.Navigator initialRouteName="WishList">
+      <Stack.Screen name="WishList" component={WishList} />
+      <Stack.Screen name="UpsertWish" component={UpsertWish} />
+    </Stack.Navigator>
   );
 };
 

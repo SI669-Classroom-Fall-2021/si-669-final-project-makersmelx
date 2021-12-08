@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Box, Center, Input, TextArea } from 'native-base';
 import Form, { FormItem } from '../../component/Form';
-import { IWish, WishService } from '../../service/index';
+import { IWish, WishService } from '../../service';
 
 const userId = '1';
 
@@ -15,7 +15,7 @@ function Edit({ route, navigation }: { route: any; navigation: any }) {
 
   return (
     <Center flex={1}>
-      <Box flex={1} width="80%">
+      <Box safeArea flex={1} width="80%">
         <Form
           space={8}
           submitButton={mode === 'edit' ? 'Update Item' : 'Add to Wishlist'}
