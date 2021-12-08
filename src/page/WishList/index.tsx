@@ -10,16 +10,6 @@ const Stack = createNativeStackNavigator();
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      tabBarLabel: 'Wish List',
-      tabBarIcon: (props: any) => <MaterialCommunityIcons
-        name="gift"
-        color={props.color}
-        size={26}
-      />,
-    });
-  });
   return (
     <Stack.Navigator initialRouteName="WishList">
       <Stack.Screen name="WishList" component={WishList} />
