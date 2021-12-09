@@ -2,7 +2,6 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Box,
   Fab,
-  FlatList,
   HStack,
   Icon,
   Pressable,
@@ -33,7 +32,7 @@ const Index: React.FC = () => {
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Friend List',
+      title: 'Friends',
       headerRight: () => (
         <Pressable>
           <MaterialCommunityIcons
@@ -99,6 +98,8 @@ const Index: React.FC = () => {
         icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
         renderInPortal={false}
         onPress={() => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           if(swipeListRef && swipeListRef.current) {swipeListRef?.current?.closeAllOpenRows()}
           navigation.navigate(
             'AddFriend' as never,
