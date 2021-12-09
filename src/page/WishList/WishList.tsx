@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, Fab, HStack, Icon, Pressable, VStack, Text } from 'native-base';
+import { Box, Fab, HStack, Icon, Pressable, Text, VStack } from 'native-base';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
@@ -10,7 +10,7 @@ import WishCard from '../../component/WishCard';
 const Index: React.FC = () => {
   const [wishList, setWishList] = useState<IWish[]>([]);
 
-  const swipeListRef = useRef(null)
+  const swipeListRef = useRef(null);
   // const userID = AuthService.auth.currentUser?.uid || '';
   const userID = '1';
   useEffect(() => {
@@ -40,11 +40,9 @@ const Index: React.FC = () => {
     });
   });
 
-  const renderHiddenItem: React.FC<{item: IWish}> = ({ item }) => (
+  const renderHiddenItem: React.FC<{ item: IWish }> = ({ item }) => (
     <HStack flex="1" pl="2">
-      <VStack
-        w="0"
-        ml="auto"/>
+      <VStack w="0" ml="auto" />
       <Pressable
         w="100"
         bg="red.500"
@@ -52,12 +50,16 @@ const Index: React.FC = () => {
         _pressed={{
           opacity: 0.5,
         }}
-        onPress = {
-          ()=>{WishService.delete(userID, item.key)}
-        }
-        >
+        onPress={() => {
+          WishService.delete(userID, item.key);
+        }}
+      >
         <VStack alignItems="center" space={2}>
-          <Icon as={<MaterialCommunityIcons name="delete" />} color="white" size="xs" />
+          <Icon
+            as={<MaterialCommunityIcons name="delete" />}
+            color="white"
+            size="xs"
+          />
           <Text color="white" fontSize="xs" fontWeight="medium">
             Delete
           </Text>
@@ -66,21 +68,16 @@ const Index: React.FC = () => {
     </HStack>
   );
 
-
   return (
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
         data={wishList}
-        renderItem={({ item }) => <WishCard
-          content={item}
-          userID={userID}
-          navigation={navigation}
-        />}
+        renderItem={({ item }) => <WishCard content={item} />}
         ref={swipeListRef}
-        keyExtractor={(item)=>item.key}
+        keyExtractor={(item) => item.key}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-100}
-        previewRowKey='0'
+        previewRowKey="0"
         previewOpenValue={-70}
         previewOpenDelay={3000}
         closeOnRowBeginSwipe
@@ -94,7 +91,9 @@ const Index: React.FC = () => {
         onPress={() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          if(swipeListRef && swipeListRef.current) {swipeListRef?.current?.closeAllOpenRows()}
+          if (swipeListRef && swipeListRef.current) {
+            swipeListRef?.current?.closeAllOpenRows();
+          }
           navigation.navigate(
             'UpsertWish' as never, { content: null, mode: 'add' } as never);
         }}
