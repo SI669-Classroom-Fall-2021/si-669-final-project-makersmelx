@@ -27,10 +27,10 @@ export default {
     const userSnap = await getDoc(userRef);
     const userInfo = userSnap.data();
     console.log(userInfo);
-    batch.set(doc(userRef, subCollectionOfUser, friendID), 
+    batch.set(doc(userRef, subCollectionOfUser, friendID),
       friendInfo
     );
-    batch.set(doc(friendRef, subCollectionOfUser, userID), 
+    batch.set(doc(friendRef, subCollectionOfUser, userID),
       userInfo
     );
     await batch.commit();
@@ -100,4 +100,5 @@ export default {
       collection(database, collectionName, userID, subCollectionOfUserRequest),
       onNext);
   },
+  subCollectionOfUser,
 };

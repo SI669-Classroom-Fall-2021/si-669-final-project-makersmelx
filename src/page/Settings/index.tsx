@@ -1,6 +1,17 @@
 import React from 'react';
-import { Text } from 'native-base';
+import { Button, Center } from 'native-base';
+import { AuthService } from '../../service';
 
-const Index: React.FC = () => <Text>Settings!</Text>;
+const Index: React.FC = () => (
+  <Center flex={1}>
+    <Button
+      onPress={() => {
+        AuthService.signOut();
+      }}
+    >
+      Sign Out
+    </Button>
+  </Center>
+);
 
 export default Index;

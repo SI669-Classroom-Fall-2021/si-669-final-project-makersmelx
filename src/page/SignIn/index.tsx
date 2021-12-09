@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import {
   Box,
   Button,
@@ -25,6 +25,16 @@ const Index: React.FC = () => {
       headerShown: false,
     });
   }, [navigation]);
+  useEffect(() => {
+    AuthService.subscribeAuth((user) => {
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' } as never],
+        });
+      }
+    });
+  }, []);
   const { run, loading } = useRequest(
     async (value) => {
       await AuthService.signIn(value.email, value.password);

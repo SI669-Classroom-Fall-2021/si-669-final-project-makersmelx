@@ -63,4 +63,5 @@ export default {
   onSnapshotUserClaim(userID: string, onNext: any) {
     return onSnapshot(collection(database, collectionName, userID, subCollectionOfUser), onNext);
   },
+  subCollectionOfUser,
 };

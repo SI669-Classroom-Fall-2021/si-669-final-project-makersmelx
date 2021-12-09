@@ -36,7 +36,8 @@ export default {
    */
   async add(item: IWish, userID: string) {
     const collectionRef = collection(database, collectionName, userID,
-      subCollectionOfUser);
+      subCollectionOfUser
+    );
     await addDoc(collectionRef, item);
   },
   /**
@@ -47,7 +48,8 @@ export default {
    */
   async update(newItem: IWish, userID: string, itemID: string) {
     const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
-      itemID);
+      itemID
+    );
     await updateDoc(userDoc, newItem);
   },
   /**
@@ -57,7 +59,8 @@ export default {
    */
   async delete(userID: string, itemID: string) {
     const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
-      itemID);
+      itemID
+    );
     await deleteDoc(userDoc);
   },
   getWishRef(userID: string, itemID: string) {
@@ -71,7 +74,9 @@ export default {
   onSnapshotUserWish(userID: string, onNext: any) {
     return onSnapshot(
       collection(database, collectionName, userID, subCollectionOfUser),
-      onNext);
+      onNext
+    );
   },
   WishState,
+  subCollectionOfUser
 };

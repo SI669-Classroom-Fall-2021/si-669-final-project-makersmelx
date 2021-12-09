@@ -19,7 +19,9 @@ const Index: React.FC = () => {
     {
       manual: true,
       onSuccess: () => {
-        navigation.navigate('Home' as never, {} as never);
+        if (AuthService.auth.currentUser) {
+          navigation.navigate('Home' as never, {} as never);
+        }
       },
       onError: (error) => {
         toast.show({

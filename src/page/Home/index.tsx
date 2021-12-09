@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 // import { WishService } from '../../service';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -8,11 +8,22 @@ import WishListStack from '../WishList';
 import Friends from '../Friends';
 import Claimed from '../Claimed';
 import Settings from '../Settings';
+import { AuthService } from '../../service';
 
 const Tab = createMaterialBottomTabNavigator();
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
+  useEffect(() => {
+    AuthService.subscribeAuth((user) => {
+      if (!user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'SignIn' } as never],
+        });
+      }
+    });
+  }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
