@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Box,
   Fab,
@@ -19,9 +19,8 @@ const userID = '1';
 
 const Index: React.FC = () => {
   const [friendList, setFriendList] = useState<IFriend[]>([]);
-  // const userID = AuthService.auth.currentUser?.uid || '';
   useEffect(() => {
-    FriendService.onSnapshotUserFriend(userID, (qSnap: { docs: any[] }) => {
+    const unsubscribe = FriendService.onSnapshotUserFriend(userID, (qSnap: { docs: any[] }) => {
       const updateList: IFriend[] = [];
       qSnap.docs.forEach(async (doc: { data: () => any; id: any }) => {
         const friendItemTmp = doc.data();
@@ -29,6 +28,7 @@ const Index: React.FC = () => {
       });
       setFriendList(updateList);
     });
+    return unsubscribe
   }, []);
   const navigation = useNavigation();
   useLayoutEffect(() => {
@@ -74,6 +74,8 @@ const Index: React.FC = () => {
     </HStack>
   );
 
+  const swipeListRef = useRef(null)
+
   return (
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
@@ -81,20 +83,23 @@ const Index: React.FC = () => {
         renderItem={({ item }) => (
           <FriendCard content={item} userID={userID} navigation={navigation} />
         )}
+        ref={swipeListRef}
+        keyExtractor={(item)=>item.ID}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-100}
         previewRowKey='0'
-        previewOpenValue={-40}
+        previewOpenValue={-70}
         previewOpenDelay={3000}
-        onRowDidOpen={(rowKey) => {
-          console.log('This row opened', rowKey);
-        }}
+        closeOnRowBeginSwipe
+        disableRightSwipe
+        closeOnRowOpen={false}
       />
       <Fab
         size="sm"
         icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
         renderInPortal={false}
         onPress={() => {
+          if(swipeListRef && swipeListRef.current) {swipeListRef?.current?.closeAllOpenRows()}
           navigation.navigate(
             'AddFriend' as never,
             { content: null, mode: 'add' } as never,

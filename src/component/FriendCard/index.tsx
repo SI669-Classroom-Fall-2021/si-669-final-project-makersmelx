@@ -25,8 +25,8 @@ const Index: React.FC<{ content: IFriend; userID: string; navigation: any }> = (
 }) => (
     <Pressable
       onPress={() => {
-        navigation.navigate(
-          'UpsertWish' as never, { content, mode: 'edit' } as never);
+        // navigation.navigate(
+        //   'UpsertWish' as never, { content, mode: 'edit' } as never);
       }}
     >
       <Box
