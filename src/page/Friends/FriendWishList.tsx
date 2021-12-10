@@ -56,7 +56,7 @@ const Index: React.FC = () => {
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <FlatList
         data={wishList}
-        renderItem={({ item }) => <WishCard content={item} />}
+        renderItem={({ item }) => <WishCard content={item} friendID = {content.ID} />}
       />
     </Box>
   );
