@@ -1,22 +1,21 @@
 import React from 'react';
-import { Avatar } from 'native-base';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Image } from 'react-native-elements';
 
 interface IProps {
   image: string;
 }
 
 const Index: React.FC<IProps> = ({ image }) => (
-  <Avatar
-    size="lg"
-    backgroundColor='white'
+  <Image
     source={{
       uri: image,
     }}
-  >
-    <MaterialCommunityIcons name="gift-outline" color="black" size={30} />
-  </Avatar>
-)
+    style={{
+      width: 60,
+      height: 60,
+      borderRadius: 100,
+    }}
+  />
+);
 
 export default Index;

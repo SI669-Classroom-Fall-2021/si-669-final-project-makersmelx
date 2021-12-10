@@ -12,12 +12,13 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
   where
 } from 'firebase/firestore';
-import database, { collectionName, userInfoCollection } from '../database';
+import database, { collectionName } from '../database';
 import ClaimService from './ClaimService';
 import WishService from './WishService';
 import FriendService from './FriendService';
@@ -66,6 +67,11 @@ export default {
     }
     const target = docSnap.docs[0].data();
     return target.ID;
+  },
+  async getProfile() {
+    const snap = await getDoc(
+      doc(database, collectionName, auth.currentUser?.uid || ''));
+    return snap.data();
   },
   subscribeAuth(nextObserver: NextOrObserver<User>) {
     return onAuthStateChanged(auth, nextObserver);
