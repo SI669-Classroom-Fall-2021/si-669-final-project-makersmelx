@@ -15,9 +15,10 @@ const textProps = {
 interface IProps {
   content: IWish;
   editable?: boolean;
+  friendID: string;
 }
 
-const Index: React.FC<IProps> = ({ content, editable }) => {
+const Index: React.FC<IProps> = ({ content, editable, friendID }) => {
   const navigation = useNavigation();
   return (
     <Pressable
@@ -27,7 +28,7 @@ const Index: React.FC<IProps> = ({ content, editable }) => {
           navigation.navigate('UpsertWish' as never, { content, mode: 'edit' } as never);
         } else {
           // Display
-          navigation.navigate('FriendWish' as never, { content } as never);
+          navigation.navigate('FriendWish' as never, { content, friendID } as never);
         }
       }}
     >
