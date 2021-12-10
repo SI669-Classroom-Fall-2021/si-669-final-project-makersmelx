@@ -1,28 +1,43 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, Fab, HStack, Icon, Pressable, Text, VStack } from 'native-base';
+import { Box, Center, Fab, HStack, Pressable, Text, VStack } from 'native-base';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FriendService, IFriend } from '../../service/index';
+import { AuthService, FriendService, IFriend } from '../../service';
 import FriendCard from '../../component/FriendCard';
-
-const userID = '1';
 
 const Index: React.FC = () => {
   const [friendList, setFriendList] = useState<IFriend[]>([]);
+  const [userID, setUserID] = useState('');
   useEffect(() => {
-    const unsubscribe = FriendService.onSnapshotUserFriend(
-      userID, (qSnap: { docs: any[] }) => {
-        const updateList: IFriend[] = [];
-        qSnap.docs.forEach(async (doc: { data: () => any; id: any }) => {
-          const friendItemTmp = doc.data();
-          updateList.push(friendItemTmp as unknown as IFriend);
-        });
-        setFriendList(updateList);
-      });
-    return unsubscribe;
+    AuthService.auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserID(user.uid);
+      }
+    });
   }, []);
+  let unsubscribe: any;
+  useEffect(() => {
+    if (userID) {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+      unsubscribe = FriendService.onSnapshotUserFriend(
+        userID, (qSnap: { docs: any[] }) => {
+          const updateList: IFriend[] = [];
+          qSnap.docs.forEach(async (doc: { data: () => any; id: any }) => {
+            const friendItemTmp = doc.data();
+            if (!friendItemTmp.email) {
+              return;
+            }
+            updateList.push(friendItemTmp as IFriend);
+          });
+          setFriendList(updateList);
+        });
+    }
+    return unsubscribe;
+  }, [userID]);
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -39,13 +54,10 @@ const Index: React.FC = () => {
     });
   });
 
-  const renderHiddenItem: React.FC<{ item: IFriend }> = ({ item }) => item.ID
-    ? (
+  const renderHiddenItem: React.FC<{ item: IFriend }> = ({ item }) =>
+    item.email ? (
       <HStack flex="1" pl="2">
-        <VStack
-          w="0"
-          ml="auto"
-        />
+        <VStack w="0" ml="auto" />
         <Pressable
           w="100"
           bg="red.500"
@@ -53,41 +65,45 @@ const Index: React.FC = () => {
           _pressed={{
             opacity: 0.5,
           }}
-          onPress={
-            () => {
-              FriendService.delete(item.ID, userID)
-            }
-          }
+          onPress={async () => {
+            await FriendService.delete(item.ID, userID);
+          }}
         >
-          <VStack alignItems="center" space={2}>
-            <Icon
-              as={<MaterialCommunityIcons name="delete" />}
-              color="white"
-              size="xs"
-            />
-            <Text color="white" fontSize="xs" fontWeight="medium">
-              Delete
-            </Text>
-          </VStack>
+          <Center flex={1}>
+            <VStack alignItems="center">
+              <MaterialCommunityIcons name="delete" color="white" size={30} />
+              <Text
+                color="white"
+                fontSize={16}
+                fontWeight="medium"
+                textAlign="center"
+              >
+                Delete
+              </Text>
+            </VStack>
+          </Center>
         </Pressable>
       </HStack>
-    )
-    : null;
+    ) : null;
 
-  const swipeListRef = useRef(null)
+  const swipeListRef = useRef(null);
 
   return (
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
         data={friendList}
-        renderItem={({ item }) => item.ID ? (
-          <FriendCard content={item} userID={userID} navigation={navigation} />
-        ) : null}
+        renderItem={({ item }) =>
+          item.email ? <FriendCard
+            content={item}
+            userID={userID}
+            navigation={navigation}
+          /> : null
+        }
         ref={swipeListRef}
-        keyExtractor={(item) => item.ID}
+        keyExtractor={(item) => item.email}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-100}
-        previewRowKey='0'
+        previewRowKey="0"
         previewOpenValue={-70}
         previewOpenDelay={3000}
         closeOnRowBeginSwipe
@@ -101,12 +117,11 @@ const Index: React.FC = () => {
         onPress={() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          if (swipeListRef
-            && swipeListRef.current) {swipeListRef?.current?.closeAllOpenRows()}
+          if (swipeListRef && swipeListRef.current) {
+            swipeListRef?.current?.closeAllOpenRows();
+          }
           navigation.navigate(
-            'AddFriend' as never,
-            { content: null, mode: 'add' } as never,
-          );
+            'AddFriend' as never, { content: null, mode: 'add' } as never);
         }}
       />
     </Box>
