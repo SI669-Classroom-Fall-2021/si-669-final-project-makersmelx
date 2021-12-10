@@ -12,7 +12,7 @@ interface IProps {
 const Index: React.FC<IProps> = ({ content }) => {
   const [fallback, setFallBack] = useState(false);
   return (
-    fallback ? <Center size={60}>
+    fallback || !content.image ? <Center size={60}>
         <MaterialCommunityIcons name="gift-outline" color="black" size={30} />
       </Center>
       : <Image
