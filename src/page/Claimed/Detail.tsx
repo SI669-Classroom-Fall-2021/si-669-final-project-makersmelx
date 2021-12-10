@@ -64,23 +64,30 @@ const Index: React.FC = () => {
   }, []);
   return (
     <Center flex={1}>
-      <Box style={{ height: '100%', width: '90%' }}>
-        <VStack style={{ height: '100%', width: '100%' }}>
-          <HStack flex={0.5} justifyContent="space-between" alignItems="center">
+      <Center style={{ height: '100%', width: '100%' }} bg="white">
+        <VStack style={{ height: '100%', width: '90%' }}>
+          <HStack
+            flex={0.5}
+            justifyContent="space-between"
+            alignItems="center"
+            mt={6}
+          >
             <Heading size="lg" textAlign="left" padding={3}>
-              {content.name}
+              {wishInfo.name}
             </Heading>
-            <Text fontSize="lg" padding={3}>{`$${content.price}`}</Text>
+            <Text fontSize="lg" padding={3}>{`$${wishInfo.price}`}</Text>
           </HStack>
+
           <Center flex={3} marginBottom={3} h="30%">
             <Image
               size="100%"
               resizeMode="cover"
-              borderRadius={10}
+              mt={6}
               source={{
-                uri: content.image,
+                uri: wishInfo.image,
               }}
               alt="gift"
+              borderRadius={6}
               fallbackElement={
                 <MaterialCommunityIcons
                   name="gift-outline"
@@ -91,35 +98,40 @@ const Index: React.FC = () => {
             />
           </Center>
           <Box flex={3}>
-            <Box
-              h="65%"
-              bg="primary.100"
-              marginY="3"
-              borderRadius={10}
-              paddingX={5}
-              paddingY={3}
-            >
-              <Heading size="md" textAlign="left" marginY="1">
-                Description
-              </Heading>
+            <Box bg="white" paddingX={5} paddingY={3} mt={2}>
               <ScrollView>
                 <Text>{wishInfo.description}</Text>
               </ScrollView>
             </Box>
             <Box
-              bg="primary.100"
-              marginY="3"
-              borderRadius={10}
+              bg="white"
               paddingX={5}
               paddingY={3}
+              borderRadius={6}
+              borderColor="gray.200"
+              borderWidth={1}
             >
-              <Link href={wishInfo.url} isExternal>
-                {wishInfo.url}
-              </Link>
+              {wishInfo.url ? (
+                <Link
+                  href={wishInfo.url}
+                  isExternal
+                  _text={{
+                    _light: {
+                      color: 'cyan.500',
+                    },
+                    color: 'cyan.300',
+                  }}
+                  isUnderlined
+                >
+                  Tap to view in the website
+                </Link>
+              ) : (
+                <Text>No link</Text>
+              )}
             </Box>
           </Box>
         </VStack>
-      </Box>
+      </Center>
     </Center>
   );
 };
