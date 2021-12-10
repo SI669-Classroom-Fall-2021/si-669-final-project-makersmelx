@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthService, FriendService, IFriend } from '../../service';
-import FriendCard from '../../component/FriendCard';
+import FriendCard from './FriendCard';
 
 const Index: React.FC = () => {
   const [friendList, setFriendList] = useState<IFriend[]>([]);
@@ -92,13 +92,9 @@ const Index: React.FC = () => {
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
         data={friendList}
-        renderItem={({ item }) =>
-          item.email ? <FriendCard
-            content={item}
-            userID={userID}
-            navigation={navigation}
-          /> : null
-        }
+        renderItem={({ item }) => (item.email
+          ? <FriendCard content={item} />
+          : null)}
         ref={swipeListRef}
         keyExtractor={(item) => item.email}
         renderHiddenItem={renderHiddenItem}
@@ -115,10 +111,8 @@ const Index: React.FC = () => {
         icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
         renderInPortal={false}
         onPress={() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           if (swipeListRef && swipeListRef.current) {
-            swipeListRef?.current?.closeAllOpenRows();
+            (swipeListRef?.current as any).closeAllOpenRows();
           }
           navigation.navigate(
             'AddFriend' as never, { content: null, mode: 'add' } as never);

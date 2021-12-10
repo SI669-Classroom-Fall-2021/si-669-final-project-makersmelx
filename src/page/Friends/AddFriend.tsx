@@ -11,7 +11,8 @@ const AddFriend: React.FC = () => {
   const loginFailToast = 'login-fail-toast';
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitle: 'Back',
+      title: 'Add a Friend',
     });
   }, [navigation]);
   const { run, loading } = useRequest(
@@ -40,7 +41,7 @@ const AddFriend: React.FC = () => {
     <Center flex={1}>
       <Box safeArea width="90%">
         <Heading size="lg">Friend List</Heading>
-        <Box mt={8}>
+        <Box>
           <Form
             space={6}
             submitButton={<Button isLoading={loading}>Add Friend</Button>}
