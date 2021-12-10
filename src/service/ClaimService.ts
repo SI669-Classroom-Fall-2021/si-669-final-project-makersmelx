@@ -33,7 +33,7 @@ export default {
     const batch = writeBatch(database);
     if(wishInfo && wisherInfo){
       batch.update(wishRef, { state: 1, claimed: userID });
-      batch.set(doc(collection(database, collectionName, userID, subCollectionOfUser, wishInfo.key)), {
+      batch.set(doc(database, collectionName, userID, subCollectionOfUser, wishInfo.key), {
       wishID: wishInfo.key,
       wisher: wisherInfo.ID,
       claimedAt: new Date(),
