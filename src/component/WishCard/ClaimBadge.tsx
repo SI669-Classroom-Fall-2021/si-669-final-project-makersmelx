@@ -27,7 +27,6 @@ const Index: React.FC<IProps> = ({ content }) => {
       return (
         <Text textAlign="right">
           <MaterialCommunityIcons name="gift-outline" color="gray" size={16}>
-            {' '}
             Completed
           </MaterialCommunityIcons>
         </Text>
