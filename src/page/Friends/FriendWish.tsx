@@ -10,11 +10,10 @@ import {
   ScrollView,
   Text,
   useToast,
-  VStack
+  VStack,
 } from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
 import { AuthService, ClaimService, IWish, WishService } from '../../service';
 
@@ -24,10 +23,8 @@ const Index: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const {
-    content,
-    friendID
-  }: { content: IWish; friendID: string } = route.params;
+  const { content, friendID }: { content: IWish; friendID: string } =
+    route.params;
   const toast = useToast();
   const claimFailToast = 'claim-fail-toast';
   useLayoutEffect(() => {
@@ -39,7 +36,10 @@ const Index: React.FC = () => {
   const { run, loading } = useRequest(
     async () => {
       await ClaimService.claimWish(
-        AuthService.auth.currentUser?.uid || '', friendID, content.key);
+        AuthService.auth.currentUser?.uid || '',
+        friendID,
+        content.key,
+      );
     },
     {
       manual: true,
@@ -83,11 +83,13 @@ const Index: React.FC = () => {
               }}
               alt="gift"
               borderRadius={6}
-              fallbackElement={<MaterialCommunityIcons
-                name="gift-outline"
-                color="black"
-                size={30}
-              />}
+              fallbackElement={
+                <MaterialCommunityIcons
+                  name="gift-outline"
+                  color="black"
+                  size={30}
+                />
+              }
             />
           </Center>
           <Box flex={3}>
@@ -104,19 +106,23 @@ const Index: React.FC = () => {
               borderColor="gray.200"
               borderWidth={1}
             >
-              <Link
-                href={content.url}
-                isExternal
-                _text={{
-                  _light: {
-                    color: 'cyan.500',
-                  },
-                  color: 'cyan.300',
-                }}
-                isUnderlined
-              >
-                Tap to view in the website
-              </Link>
+              {content.url ? (
+                <Link
+                  href={content.url}
+                  isExternal
+                  _text={{
+                    _light: {
+                      color: 'cyan.500',
+                    },
+                    color: 'cyan.300',
+                  }}
+                  isUnderlined
+                >
+                  Tap to view in the website
+                </Link>
+              ) : (
+                <Text>No link</Text>
+              )}
             </Box>
             <Button
               isLoading={loading}
