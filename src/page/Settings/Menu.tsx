@@ -119,6 +119,7 @@ const Index: React.FC = () => {
           data={[
             { icon: 'account-circle', title: 'Your Profile' },
             { icon: 'cog', title: 'Settings' }]}
+          keyExtractor={(item) => item.title}
           renderItem={({ item }) => (
             <Center width="100%">
               <Row

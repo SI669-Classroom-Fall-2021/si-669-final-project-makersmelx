@@ -36,7 +36,7 @@ const Index: React.FC = () => {
           url: value.url || '',
           description: value.description || '',
           image: value.image || '',
-          price: value.price || 0,
+          price: value.price || '0',
           createdAt: new Date(),
           state: WishService.WishState.Default,
           key: uuidv4(),
