@@ -46,6 +46,7 @@ const Index: React.FC<{ content: IFriend }> = ({ content }) => {
                 {content.username}
               </Text>
             </Column>
+            <Row flex={1} justifyContent="flex-end" />
           </Row>
         </Center>
       </Box>

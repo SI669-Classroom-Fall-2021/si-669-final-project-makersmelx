@@ -1,17 +1,13 @@
 import React from 'react';
-import { Button, Center } from 'native-base';
-import { AuthService } from '../../service';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Menu from './Menu';
+
+const Stack = createNativeStackNavigator();
 
 const Index: React.FC = () => (
-  <Center flex={1}>
-    <Button
-      onPress={() => {
-        AuthService.signOut();
-      }}
-    >
-      Sign Out
-    </Button>
-  </Center>
+  <Stack.Navigator initialRouteName="Menu">
+    <Stack.Screen name="Menu" component={Menu} />
+  </Stack.Navigator>
 );
 
 export default Index;

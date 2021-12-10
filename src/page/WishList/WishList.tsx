@@ -113,8 +113,6 @@ const Index: React.FC = () => {
         icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
         renderInPortal={false}
         onPress={() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           if (swipeListRef && swipeListRef.current) {
             (swipeListRef?.current as any).closeAllOpenRows();
           }

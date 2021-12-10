@@ -26,8 +26,7 @@ const Index: React.FC<IProps> = ({ content }) => {
     case WishService.WishState.Completed: {
       return (
         <Text textAlign="right">
-          <MaterialCommunityIcons name="gift-open" color="gray" size={16}>
-            {' '}
+          <MaterialCommunityIcons name="gift-outline" color="gray" size={16}>
             Completed
           </MaterialCommunityIcons>
         </Text>
