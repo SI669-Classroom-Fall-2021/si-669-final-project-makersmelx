@@ -18,7 +18,6 @@ const Index: React.FC<IProps> = ({ content }) => {
       return (
         <Text textAlign="left">
           <MaterialCommunityIcons name="check" color="green" size={16}>
-            {' '}
             Claimed
           </MaterialCommunityIcons>
         </Text>

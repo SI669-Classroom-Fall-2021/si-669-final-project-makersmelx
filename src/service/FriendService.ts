@@ -1,15 +1,23 @@
-import { collection, doc, DocumentData, DocumentReference, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
-import database, { collectionName } from '../database';
+import {
+  collection,
+  doc,
+  DocumentData,
+  DocumentReference,
+  getDoc,
+  onSnapshot,
+  writeBatch
+} from 'firebase/firestore';
+import database, { collectionName, userInfoCollection } from '../database';
 
 const subCollectionOfUser = 'friend';
 const subCollectionOfUserRequest = 'friendRequest';
 
 export interface IFriend {
-  // friendRef: any;
   // todo: help wish count
-  ID: string; // Email
-  name: string;
-  image: string;
+  email: string;
+  username: string;
+  gravatar: string;
+  ID: string,
 }
 
 export default {
@@ -22,15 +30,15 @@ export default {
     const friendRef = doc(database, collectionName, friendID);
     const friendSnap = await getDoc(friendRef);
     const friendInfo = friendSnap.data();
-    console.log(friendInfo);
     const userRef = doc(database, collectionName, userID);
     const userSnap = await getDoc(userRef);
     const userInfo = userSnap.data();
-    console.log(userInfo);
-    batch.set(doc(userRef, subCollectionOfUser, friendID),
+    batch.set(
+      doc(userRef, subCollectionOfUser, friendID),
       friendInfo
     );
-    batch.set(doc(friendRef, subCollectionOfUser, userID),
+    batch.set(
+      doc(friendRef, subCollectionOfUser, userID),
       userInfo
     );
     await batch.commit();
@@ -52,7 +60,7 @@ export default {
    * @param friendID
    * @param userID
    */
-   async addRequest(friendID: string, userID: string) {
+  async addRequest(friendID: string, userID: string) {
     const batch = writeBatch(database);
     const friendRef = doc(database, collectionName, friendID);
     const userRef = doc(database, collectionName, userID);
@@ -76,7 +84,7 @@ export default {
    *
    * @param friendID
    */
-   async getFriendInfo(friendRef: DocumentReference<DocumentData>) {
+  async getFriendInfo(friendRef: DocumentReference<DocumentData>) {
     const docSnap = await getDoc(friendRef);
     return docSnap;
   },
@@ -88,17 +96,19 @@ export default {
   onSnapshotUserFriend(userID: string, onNext: any) {
     return onSnapshot(
       collection(database, collectionName, userID, subCollectionOfUser),
-      onNext);
+      onNext
+    );
   },
   /**
    * Subscribe the collection of a user's friend requests
    * @param userID
    * @param onNext
    */
-   onSnapshotUserFriendRequest(userID: string, onNext: any) {
+  onSnapshotUserFriendRequest(userID: string, onNext: any) {
     return onSnapshot(
       collection(database, collectionName, userID, subCollectionOfUserRequest),
-      onNext);
+      onNext
+    );
   },
   subCollectionOfUser,
 };

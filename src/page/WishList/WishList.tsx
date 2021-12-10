@@ -93,9 +93,10 @@ const Index: React.FC = () => {
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
         data={wishList}
-        renderItem={({ item }) => (item.name
-          ? <WishCard content={item} />
-          : null)}
+        renderItem={({ item }) => (item.name ? <WishCard
+          content={item}
+          editable
+        /> : null)}
         ref={swipeListRef}
         keyExtractor={(item) => item.key}
         renderHiddenItem={renderHiddenItem}
@@ -113,9 +114,7 @@ const Index: React.FC = () => {
         renderInPortal={false}
         onPress={() => {
           if (swipeListRef && swipeListRef.current) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            swipeListRef?.current?.closeAllOpenRows();
+            (swipeListRef?.current as any).closeAllOpenRows();
           }
           navigation.navigate(
             'UpsertWish' as never, { content: null, mode: 'add' } as never);

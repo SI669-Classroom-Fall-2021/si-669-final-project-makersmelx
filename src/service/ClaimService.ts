@@ -1,13 +1,17 @@
-import { collection, doc, onSnapshot, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 import WishService from './WishService';
 
-interface IClaim {
-  wishRef: any;
-  wisher: any;
+export interface IClaim {
+  wishID: string;
+  wisher: string;
   state: ClaimState;
   claimedAt: any;
   completedAt: any;
+  image: string;
+  name: string;
+  price: number;
+  claimID: string; // 目前这个和wishID完全一致！！！！！
 }
 
 enum ClaimState {
@@ -21,15 +25,29 @@ export default {
   async claimWish(userID: string, friendID: string, wishID: string) {
     // todo: validate user and friend are friends
     const wishRef = WishService.getWishRef(friendID, wishID);
+    const wishSnap = await getDoc(wishRef);
+    const wishInfo = wishSnap.data();
+    const wisherRef = doc(database, collectionName, friendID);
+    const wisherSnap = await getDoc(wisherRef);
+    const wisherInfo = wisherSnap.data();
     const batch = writeBatch(database);
-    batch.update(wishRef, { state: 1, claimed: userID });
-    batch.set(doc(collection(database, collectionName, userID, subCollectionOfUser)), {
-      wishRef,
-      wisher: doc(database, collectionName, friendID),
+    if(wishInfo && wisherInfo){
+      batch.update(wishRef, { state: 1, claimed: userID });
+      batch.set(doc(collection(database, collectionName, userID, subCollectionOfUser, wishInfo.key)), {
+      wishID: wishInfo.key,
+      wisher: wisherInfo.ID,
       claimedAt: new Date(),
       state: ClaimState.Default,
-    } as IClaim);
-    await batch.commit();
+      image: wishInfo.image,
+      name: wishInfo.name,
+      price: wishInfo.price,
+      claimID: wishInfo.key
+      } as IClaim);
+      await batch.commit();
+    }else{
+      console.error("Failed to claim wish")
+    }
+    
   },
   /**
    *
@@ -64,4 +82,5 @@ export default {
     return onSnapshot(collection(database, collectionName, userID, subCollectionOfUser), onNext);
   },
   subCollectionOfUser,
+  ClaimState
 };

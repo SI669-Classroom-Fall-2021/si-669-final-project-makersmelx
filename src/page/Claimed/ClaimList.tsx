@@ -1,47 +1,51 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, Center, Fab, HStack, Pressable, Text, VStack } from 'native-base';
+import { Box, Center, HStack, Pressable, Text, VStack } from 'native-base';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AuthService, FriendService, IFriend } from '../../service';
-import FriendCard from './FriendCard';
+import firebase from 'firebase/compat';
+import { AuthService, IClaim, ClaimService } from '../../service';
+import ClaimCard from '../../component/ClaimCard';
 
-const Index: React.FC = () => {
-  const [friendList, setFriendList] = useState<IFriend[]>([]);
+const ClaimList: React.FC = () => {
+  const [claimList, setClaimList] = useState<IClaim[]>([]);
   const [userID, setUserID] = useState('');
+  const swipeListRef = useRef(null);
+  const navigation = useNavigation();
   useEffect(() => {
     AuthService.auth.onAuthStateChanged((user) => {
       if (user) {
-        setUserID(user.uid);
+        setUserID(AuthService.auth.currentUser?.uid || '');
       }
     });
   }, []);
-  let unsubscribe: any;
+  let unsubscription: firebase.Unsubscribe;
   useEffect(() => {
     if (userID) {
-      if (unsubscribe) {
-        unsubscribe();
+      if (unsubscription) {
+        unsubscription();
       }
-      unsubscribe = FriendService.onSnapshotUserFriend(
+      unsubscription = ClaimService.onSnapshotUserClaim(
         userID, (qSnap: { docs: any[] }) => {
-          const updateList: IFriend[] = [];
-          qSnap.docs.forEach(async (doc: { data: () => any; id: any }) => {
-            const friendItemTmp = doc.data();
-            if (!friendItemTmp.email) {
+          const updateList: IClaim[] = [];
+          qSnap.docs.forEach((doc: { data: () => any; id: any }) => {
+            const claimItemTmp = doc.data();
+            if (!claimItemTmp.name) {
               return;
             }
-            updateList.push(friendItemTmp as IFriend);
+            claimItemTmp.key = doc.id;
+            updateList.push(claimItemTmp);
           });
-          setFriendList(updateList);
+          setClaimList(updateList);
         });
     }
-    return unsubscribe;
+    return unsubscription;
   }, [userID]);
-  const navigation = useNavigation();
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Friends',
+      title: 'Claim List',
       headerRight: () => (
         <Pressable>
           <MaterialCommunityIcons
@@ -54,20 +58,23 @@ const Index: React.FC = () => {
     });
   });
 
-  const renderHiddenItem: React.FC<{ item: IFriend }> = ({ item }) =>
-    item.email ? (
+  const renderHiddenItem: React.FC<{ item: IClaim }> = ({ item }) =>
+    item.name ? (
       <HStack flex="1" pl="2">
         <VStack w="0" ml="auto" />
         <Pressable
           w="100"
-          bg="red.500"
-          justifyContent="center"
+          bg={item.state === ClaimService.ClaimState.Completed? "gray.500":"red.500"}
           _pressed={{
             opacity: 0.5,
           }}
-          onPress={async () => {
-            await FriendService.delete(item.ID, userID);
+          _disabled={{
+            opacity: 0.5,
           }}
+          onPress={async () => {
+            await ClaimService.declaimWish(userID, item.wisher,item.wishID,item.claimID);
+          }}
+          disabled = {item.state === ClaimService.ClaimState.Completed}
         >
           <Center flex={1}>
             <VStack alignItems="center">
@@ -78,7 +85,7 @@ const Index: React.FC = () => {
                 fontWeight="medium"
                 textAlign="center"
               >
-                Delete
+                Decline
               </Text>
             </VStack>
           </Center>
@@ -86,40 +93,26 @@ const Index: React.FC = () => {
       </HStack>
     ) : null;
 
-  const swipeListRef = useRef(null);
-
   return (
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
-        data={friendList}
-        renderItem={({ item }) => (item.email
-          ? <FriendCard content={item} />
+        data={claimList}
+        renderItem={({ item }) => (item.name
+          ? <ClaimCard content={item} userID={userID} />
           : null)}
         ref={swipeListRef}
-        keyExtractor={(item) => item.email}
+        keyExtractor={(item) => item.claimID}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-100}
         previewRowKey="0"
-        previewOpenValue={-70}
+        previewOpenValue={-50}
         previewOpenDelay={3000}
         closeOnRowBeginSwipe
         disableRightSwipe
         closeOnRowOpen={false}
       />
-      <Fab
-        size="sm"
-        icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
-        renderInPortal={false}
-        onPress={() => {
-          if (swipeListRef && swipeListRef.current) {
-            (swipeListRef?.current as any).closeAllOpenRows();
-          }
-          navigation.navigate(
-            'AddFriend' as never, { content: null, mode: 'add' } as never);
-        }}
-      />
     </Box>
   );
 };
 
-export default Index;
+export default ClaimList;

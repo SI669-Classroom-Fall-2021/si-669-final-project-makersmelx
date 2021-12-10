@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
     "ahooks": "^2.10.14",
+    "crypto-js": "^4.1.1",
     "expo": "~43.0.0",
     "expo-status-bar": "~1.1.0",
     "firebase": "^9.5.0",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/crypto-js": "^4.0.2",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/uuid": "^8.3.3",

@@ -1,19 +1,8 @@
 import React, { useLayoutEffect } from 'react';
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Input,
-  Link,
-  Row,
-  Text,
-  useToast
-} from 'native-base';
+import { Box, Button, Center, Heading, Input, useToast } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
-import PasswordInput from '../../component/PasswordInput';
 import { AuthService, FriendService } from '../../service';
 
 const AddFriend: React.FC = () => {
@@ -22,22 +11,20 @@ const AddFriend: React.FC = () => {
   const loginFailToast = 'login-fail-toast';
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitle: 'Back',
+      title: 'Add a Friend',
     });
   }, [navigation]);
   const { run, loading } = useRequest(
     async (value) => {
-      const userID = "1";
-      // const userRef = AuthService.auth.currentUser;
-      // if(userRef && userRef.email){
-      //   userID = userRef.email
-      // }
-      await FriendService.add(value.email,userID);
+      const userID = AuthService.auth?.currentUser?.uid || '';
+      const friendID = await AuthService.getUserIDByEmail(value.email);
+      await FriendService.add(friendID, userID);
     },
     {
       manual: true,
       onSuccess: () => {
-        navigation.navigate('FriendList' as never, {} as never);
+        navigation.goBack();
       },
       onError: () => {
         toast.show({
@@ -54,7 +41,7 @@ const AddFriend: React.FC = () => {
     <Center flex={1}>
       <Box safeArea width="90%">
         <Heading size="lg">Friend List</Heading>
-        <Box mt={8}>
+        <Box>
           <Form
             space={6}
             submitButton={<Button isLoading={loading}>Add Friend</Button>}
@@ -66,11 +53,11 @@ const AddFriend: React.FC = () => {
               defaultValue=""
               rules={{
                 required: 'Email is required',
-                // pattern: {
-                //   value:
-                //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                //   message: 'Invalid email',
-                // },
+                pattern: {
+                  value:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  message: 'Invalid email',
+                },
               }}
             >
               <Input />
