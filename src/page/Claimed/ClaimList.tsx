@@ -8,7 +8,7 @@ import firebase from 'firebase/compat';
 import { AuthService, IClaim, ClaimService } from '../../service';
 import ClaimCard from '../../component/ClaimCard';
 
-const Index: React.FC = () => {
+const ClaimList: React.FC = () => {
   const [claimList, setClaimList] = useState<IClaim[]>([]);
   const [userID, setUserID] = useState('');
   const swipeListRef = useRef(null);
@@ -64,13 +64,17 @@ const Index: React.FC = () => {
         <VStack w="0" ml="auto" />
         <Pressable
           w="100"
-          bg="red.500"
+          bg={item.state === ClaimService.ClaimState.Completed? "gray.500":"red.500"}
           _pressed={{
+            opacity: 0.5,
+          }}
+          _disabled={{
             opacity: 0.5,
           }}
           onPress={async () => {
             await ClaimService.declaimWish(userID, item.wisher,item.wishID,item.claimID);
           }}
+          disabled = {item.state === ClaimService.ClaimState.Completed}
         >
           <Center flex={1}>
             <VStack alignItems="center">
@@ -111,4 +115,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default ClaimList;

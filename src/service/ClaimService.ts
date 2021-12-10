@@ -10,7 +10,7 @@ export interface IClaim {
   completedAt: any;
   image: string;
   name: string;
-  price: string;
+  price: number;
   claimID: string; // 目前这个和wishID完全一致！！！！！
 }
 
@@ -82,4 +82,5 @@ export default {
     return onSnapshot(collection(database, collectionName, userID, subCollectionOfUser), onNext);
   },
   subCollectionOfUser,
+  ClaimState
 };
