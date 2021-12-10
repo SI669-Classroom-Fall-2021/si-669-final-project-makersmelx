@@ -115,7 +115,7 @@ const Index: React.FC = () => {
                 }}
                 isUnderlined
               >
-                {content.url}
+                Navigate to the external website
               </Link>
             </Box>
             <Button
