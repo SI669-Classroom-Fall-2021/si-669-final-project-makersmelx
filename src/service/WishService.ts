@@ -1,10 +1,10 @@
 import {
-  addDoc,
+  setDoc,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
-  updateDoc
+  updateDoc,
 } from 'firebase/firestore';
 import database, { collectionName } from '../database';
 
@@ -24,7 +24,7 @@ export interface IWish {
 enum WishState {
   Default = 0,
   Claimed = 1,
-  Completed = 2
+  Completed = 2,
 }
 
 const subCollectionOfUser = 'wish';
@@ -35,10 +35,10 @@ export default {
    * @param userID
    */
   async add(item: IWish, userID: string) {
-    const collectionRef = collection(database, collectionName, userID,
-      subCollectionOfUser
+    await setDoc(
+      doc(database, collectionName, userID, subCollectionOfUser, item.key),
+      item,
     );
-    await addDoc(collectionRef, item);
   },
   /**
    *
@@ -47,8 +47,12 @@ export default {
    * @param itemID
    */
   async update(newItem: IWish, userID: string, itemID: string) {
-    const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
-      itemID
+    const userDoc = doc(
+      database,
+      collectionName,
+      userID,
+      subCollectionOfUser,
+      itemID,
     );
     await updateDoc(userDoc, newItem);
   },
@@ -58,8 +62,12 @@ export default {
    * @param itemID
    */
   async delete(userID: string, itemID: string) {
-    const userDoc = doc(database, collectionName, userID, subCollectionOfUser,
-      itemID
+    const userDoc = doc(
+      database,
+      collectionName,
+      userID,
+      subCollectionOfUser,
+      itemID,
     );
     await deleteDoc(userDoc);
   },
@@ -74,9 +82,9 @@ export default {
   onSnapshotUserWish(userID: string, onNext: any) {
     return onSnapshot(
       collection(database, collectionName, userID, subCollectionOfUser),
-      onNext
+      onNext,
     );
   },
   WishState,
-  subCollectionOfUser
+  subCollectionOfUser,
 };
