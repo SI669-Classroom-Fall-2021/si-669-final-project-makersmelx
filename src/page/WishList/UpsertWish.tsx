@@ -1,11 +1,21 @@
-import React, { useLayoutEffect } from 'react';
-import { Box, Button, Center, Input, TextArea, useToast } from 'native-base';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Center,
+  Input,
+  TextArea,
+  useToast,
+  Text,
+} from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import * as ImagePicker from 'expo-image-picker';
+import { Platform } from 'react-native';
 import Form, { FormItem } from '../../component/Form';
-import { AuthService, IWish, WishService } from '../../service';
+import { AuthService, IWish, WishService, photoService } from '../../service';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -15,6 +25,41 @@ const Index: React.FC = () => {
   const { content, mode } = route.params;
   const toast = useToast();
   const formFailToast = 'form-fail-toast';
+  const [image, setImage] = useState(content?.image || '');
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      photoService.savePicture(
+        AuthService.auth.currentUser?.uid || 'Guest',
+        result,
+      ).then((newuri)=>{
+        setImage(newuri);
+      }
+      );
+    }
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitle: 'Back',
@@ -28,21 +73,27 @@ const Index: React.FC = () => {
             content[key] = value[key];
           }
         });
+        content.image = image;
         await WishService.update(
-          content, AuthService.auth.currentUser?.uid || '', content.key);
+          content,
+          AuthService.auth.currentUser?.uid || '',
+          content.key,
+        );
       } else {
         const newContent = {
           name: value.name || '',
           url: value.url || '',
           description: value.description || '',
-          image: value.image || '',
+          image: image || '',
           price: value.price || '0',
           createdAt: new Date(),
           state: WishService.WishState.Default,
           key: uuidv4(),
         } as IWish;
         await WishService.add(
-          newContent, AuthService.auth.currentUser?.uid || '');
+          newContent,
+          AuthService.auth.currentUser?.uid || '',
+        );
       }
     },
     {
@@ -64,9 +115,11 @@ const Index: React.FC = () => {
   const onFinish = async (value: any) => {
     await run(value);
   };
-  const submitButton = <Button isLoading={loading}>{mode === 'edit'
-    ? 'Update Item'
-    : 'Add to Wishlist'}</Button>;
+  const submitButton = (
+    <Button isLoading={loading}>
+      {mode === 'edit' ? 'Update Item' : 'Add to Wishlist'}
+    </Button>
+  );
   return (
     <Center flex={1}>
       <Box safeArea flex={1} width="90%">
@@ -95,9 +148,9 @@ const Index: React.FC = () => {
           >
             <Input />
           </FormItem>
-          <FormItem name="image" label="Image" defaultValue={content?.image}>
-            <Input />
-          </FormItem>
+          <Text fontSize={15} color='black'>Image</Text>
+          <Input value={image} marginTop = '-7'/>
+          <Button onPress={pickImage}> Pick an image from camera roll </Button>
           <FormItem
             name="description"
             label="Description"

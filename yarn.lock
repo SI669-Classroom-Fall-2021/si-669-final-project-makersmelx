@@ -4446,6 +4446,15 @@ expo-font@~10.0.3:
     expo-modules-core "~0.4.4"
     fontfaceobserver "^2.1.0"
 
+expo-image-picker@~11.0.3:
+  version "11.0.3"
+  resolved "https://registry.npmmirror.com/expo-image-picker/download/expo-image-picker-11.0.3.tgz#c0b6cb9b5fa027f1bd1879a879fe13157f31ac94"
+  integrity sha1-wLbLm1+gJ/G9GHmoef4TFX8xrJQ=
+  dependencies:
+    "@expo/config-plugins" "^4.0.2"
+    expo-modules-core "~0.4.4"
+    uuid "7.0.2"
+
 expo-keep-awake@~10.0.0:
   version "10.0.0"
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-10.0.0.tgz"
@@ -8356,6 +8365,11 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+uuid@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.npmmirror.com/uuid/download/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
+  integrity sha1-f/XCA0Z+kfXg2Fz8uq99LrvKm+Y=
 
 uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"

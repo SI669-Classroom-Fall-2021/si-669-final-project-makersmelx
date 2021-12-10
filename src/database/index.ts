@@ -4,6 +4,7 @@ import {
   initializeFirestore,
   onSnapshot
 } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import firebaseConfig from '../secret';
 
 let app;
@@ -12,6 +13,7 @@ if (getApps().length === 0) {
 }
 
 const database = initializeFirestore(app as FirebaseApp, {});
+export const storage = getStorage(app);
 
 export const collectionName = 'users';
 export const userInfoCollection = 'userInfo';
