@@ -95,6 +95,7 @@ const Index: React.FC = () => {
         data={wishList}
         renderItem={({ item }) => (item.name ? <WishCard
           content={item}
+          friendID = {userID}
           editable
         /> : null)}
         ref={swipeListRef}

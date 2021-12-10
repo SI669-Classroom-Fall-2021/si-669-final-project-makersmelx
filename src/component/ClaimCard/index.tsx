@@ -19,8 +19,8 @@ const Index: React.FC<{ content: IClaim; userID: string }> = ({
     <Pressable
       onPress={() => {
         navigation.navigate(
-          'UpsertWish' as never,
-          { content, mode: 'edit' } as never,
+          'FriendWish' as never,
+          { content} as never,
         );
       }}
     >
