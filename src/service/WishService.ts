@@ -13,7 +13,7 @@ export interface IWish {
   url: string;
   description: string;
   image: string;
-  price: string;
+  price: number;
   createdAt: any;
   state: WishState;
   claimedBy?: string;
