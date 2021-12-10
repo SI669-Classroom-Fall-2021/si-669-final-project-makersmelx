@@ -1,9 +1,15 @@
 import React from 'react';
-import { Text } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ClaimList from './ClaimList';
+import Detail from './Detail';
 
-const Index: React.FC = () => <Text>Friend!</Text>;
+const Stack = createNativeStackNavigator();
+
+const Index: React.FC = () => (
+  <Stack.Navigator initialRouteName="ClaimList ">
+    <Stack.Screen name="ClaimList" component={ClaimList} />
+    <Stack.Screen name="Detail" component={Detail} />
+  </Stack.Navigator>
+);
 
 export default Index;
