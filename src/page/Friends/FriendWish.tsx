@@ -10,12 +10,14 @@ import {
   ScrollView,
   Text,
   useToast,
-  VStack,
+  VStack
 } from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
-import { AuthService, ClaimService, IWish, WishService } from '../../service';
+import { ClaimService, WishService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -23,8 +25,7 @@ const Index: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const { content, friendID }: { content: IWish; friendID: string } =
-    route.params;
+  const { content, friendID } = route.params;
   const toast = useToast();
   const claimFailToast = 'claim-fail-toast';
   useLayoutEffect(() => {
@@ -33,22 +34,22 @@ const Index: React.FC = () => {
       title: content.name,
     });
   });
+  const auth = useAuth();
   const { run, loading } = useRequest(
     async () => {
-      await ClaimService.claimWish(
-        AuthService.auth.currentUser?.uid || '',
-        friendID,
-        content.key,
-      );
+      if (!auth.user) {
+        throw new Error('Sign In to claim this wish');
+      }
+      await ClaimService.claimWish(auth.user.uid, friendID, content.key);
     },
     {
       manual: true,
       onSuccess: () => {
         navigation.goBack();
       },
-      onError: () => {
+      onError: (error) => {
         toast.show({
-          title: 'User not found',
+          title: error.message,
           status: 'error',
           id: claimFailToast,
           placement: 'top',
@@ -83,13 +84,11 @@ const Index: React.FC = () => {
               }}
               alt="gift"
               borderRadius={6}
-              fallbackElement={
-                <MaterialCommunityIcons
-                  name="gift-outline"
-                  color="black"
-                  size={30}
-                />
-              }
+              fallbackElement={<MaterialCommunityIcons
+                name="gift-outline"
+                color="black"
+                size={30}
+              />}
             />
           </Center>
           <Box flex={3}>

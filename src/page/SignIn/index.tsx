@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
   Box,
   Button,
@@ -14,30 +14,22 @@ import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
 import PasswordInput from '../../component/PasswordInput';
-import { AuthService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const loginFailToast = 'login-fail-toast';
+  const auth = useAuth();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
-  useEffect(() => {
-    AuthService.subscribeAuth((user) => {
-      if (user) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' } as never],
-        });
-      }
-    });
-  }, []);
+
   const { run, loading } = useRequest(
     async (value) => {
-      await AuthService.signIn(value.email, value.password);
+      await auth.signIn(value.email, value.password);
     },
     {
       manual: true,

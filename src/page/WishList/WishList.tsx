@@ -5,29 +5,23 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import firebase from 'firebase/compat';
-import { AuthService, IWish, WishService } from '../../service';
+import { IWish, WishService } from '../../service';
 import WishCard from '../../component/WishCard';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const [wishList, setWishList] = useState<IWish[]>([]);
-  const [userID, setUserID] = useState('');
   const swipeListRef = useRef(null);
   const navigation = useNavigation();
-  useEffect(() => {
-    AuthService.auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserID(AuthService.auth.currentUser?.uid || '');
-      }
-    });
-  }, []);
+  const auth = useAuth();
   let unsubscription: firebase.Unsubscribe;
   useEffect(() => {
-    if (userID) {
+    if (auth.user) {
       if (unsubscription) {
         unsubscription();
       }
       unsubscription = WishService.onSnapshotUserWish(
-        userID, (qSnap: { docs: any[] }) => {
+        auth.user.uid, (qSnap: { docs: any[] }) => {
           const updateList: IWish[] = [];
           qSnap.docs.forEach((doc: { data: () => any; id: any }) => {
             const wishItemTmp = doc.data();
@@ -41,7 +35,7 @@ const Index: React.FC = () => {
         });
     }
     return unsubscription;
-  }, [userID]);
+  }, [auth.user]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,7 +63,7 @@ const Index: React.FC = () => {
             opacity: 0.5,
           }}
           onPress={async () => {
-            await WishService.delete(userID, item.key);
+            await WishService.delete(auth.user.uid, item.key);
           }}
         >
           <Center flex={1}>
@@ -95,7 +89,7 @@ const Index: React.FC = () => {
         data={wishList}
         renderItem={({ item }) => (item.name ? <WishCard
           content={item}
-          friendID = {userID}
+          friendID={auth.user.uid}
           editable
         /> : null)}
         ref={swipeListRef}
@@ -118,7 +112,7 @@ const Index: React.FC = () => {
             (swipeListRef?.current as any).closeAllOpenRows();
           }
           navigation.navigate(
-            'UpsertWish' as never, { content: null, mode: 'add' } as never);
+            'UpsertWish' as never, { content: null, mode: 'create' } as never);
         }}
       />
     </Box>
