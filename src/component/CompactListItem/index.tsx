@@ -13,10 +13,7 @@ const Index: React.FC<IProps> = ({ onPress, avatar, content, extra }) => (
     <Box
       width="100%"
       overflow="hidden"
-      borderColor="coolGray.200"
-      borderWidth="0.5"
       _dark={{
-        borderColor: 'coolGray.600',
         backgroundColor: 'gray.700',
       }}
       _web={{
@@ -27,6 +24,7 @@ const Index: React.FC<IProps> = ({ onPress, avatar, content, extra }) => (
         backgroundColor: 'white',
       }}
     >
+      <Box ml='auto' width="80%" borderColor="gray.300" borderBottomWidth="1" />
       <Center flex={1}>
         <Box width="95%" py={2}>
           <Row alignItems="center" space={4} justifyContent="flex-start" flex={1}>

@@ -35,7 +35,7 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
     avatar={
       <LazyLoadImage
         source={{ uri: content.image }}
-        style={{ width: 60, height: 60, borderRadius: 100 }}
+        style={{ width: 60 , height: 60, borderRadius: 100 }}
       >
         <MaterialCommunityIcons
           name="gift-outline"
@@ -45,7 +45,7 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
       </LazyLoadImage>
     }
     content={
-      <Column justifyContent="flex-start" space={2}>
+      <Column justifyContent="flex-start" space={3}>
         <Text
           fontWeight="600"
           textAlign="left"
@@ -62,7 +62,6 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
         <Text textAlign="right" numberOfLines={1} color="muted.500">
           {getDate(content)}
         </Text>
-
       </Column>
     }
   />
