@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Button,
   Center,
   Heading,
   HStack,
   Image,
   Link,
-  Text,
-  VStack,
   ScrollView,
-  useToast,
+  Text,
+  VStack
 } from 'native-base';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRequest } from 'ahooks';
+import { useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getDoc } from 'firebase/firestore';
-import {
-  AuthService,
-  ClaimService,
-  IWish,
-  WishService,
-  IClaim,
-} from '../../service';
+import { IClaim, IWish, WishService } from '../../service';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -42,23 +34,20 @@ const Index: React.FC = () => {
   });
   useEffect(() => {
     (async () => {
-      if (AuthService.auth.currentUser) {
-        const wishRef = WishService.getWishRef(content.wisher, content.wishID);
-        const wishSnap = await getDoc(wishRef);
-        const wishInfoTmp = wishSnap.data();
-        if(wishInfoTmp){
-          setWishInfo({
-            name: wishInfoTmp.name,
-            url: wishInfoTmp.url,
-            description: wishInfoTmp.description,
-            image: wishInfoTmp.image,
-            price: wishInfoTmp.price,
-            createdAt: wishInfoTmp.createdAt,
-            state: wishInfoTmp.state,
-            key: wishInfoTmp.wishID,
-          });
-        }
-        
+      const wishRef = WishService.getWishRef(content.wisher, content.wishID);
+      const wishSnap = await getDoc(wishRef);
+      const wishInfoTmp = wishSnap.data();
+      if (wishInfoTmp) {
+        setWishInfo({
+          name: wishInfoTmp.name,
+          url: wishInfoTmp.url,
+          description: wishInfoTmp.description,
+          image: wishInfoTmp.image,
+          price: wishInfoTmp.price,
+          createdAt: wishInfoTmp.createdAt,
+          state: wishInfoTmp.state,
+          key: wishInfoTmp.wishID,
+        });
       }
     })();
   }, []);

@@ -3,12 +3,14 @@ import { Box, Button, Center, Heading, Input, useToast } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
-import { AuthService, FriendService } from '../../service';
+import { FriendService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
 
 const AddFriend: React.FC = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const loginFailToast = 'login-fail-toast';
+  const auth = useAuth();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitle: 'Back',
@@ -17,18 +19,20 @@ const AddFriend: React.FC = () => {
   }, [navigation]);
   const { run, loading } = useRequest(
     async (value) => {
-      const userID = AuthService.auth?.currentUser?.uid || '';
-      const friendID = await AuthService.getUserIDByEmail(value.email);
-      await FriendService.add(friendID, userID);
+      if (!auth.user) {
+        throw new Error('Sign In to add friends');
+      }
+      const friendID = await auth.getUserIDByEmail(value.email);
+      await FriendService.add(friendID, auth.user.uid);
     },
     {
       manual: true,
       onSuccess: () => {
         navigation.goBack();
       },
-      onError: () => {
+      onError: (error) => {
         toast.show({
-          title: 'User not found',
+          title: error.message,
           status: 'error',
           id: loginFailToast,
           placement: 'top',

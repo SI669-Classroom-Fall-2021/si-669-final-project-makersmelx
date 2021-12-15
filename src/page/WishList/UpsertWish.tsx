@@ -1,18 +1,21 @@
 import React, { useLayoutEffect } from 'react';
 import { Box, Button, Center, Input, TextArea, useToast } from 'native-base';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import Form, { FormItem } from '../../component/Form';
-import { AuthService, IWish, WishService } from '../../service';
+import { IWish, WishService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
+import { WishParamList } from './WishParamList';
+
+type UpsertRouteProp = RouteProp<WishParamList, 'UpsertWish'>;
 
 const Index: React.FC = () => {
-  const route = useRoute();
+  const route = useRoute<UpsertRouteProp>();
   const navigation = useNavigation();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { content, mode } = route.params;
+  const content = route.params?.content;
+  const mode = route.params?.mode;
   const toast = useToast();
   const formFailToast = 'form-fail-toast';
   useLayoutEffect(() => {
@@ -20,16 +23,21 @@ const Index: React.FC = () => {
       headerBackTitle: 'Back',
     });
   });
+  const auth = useAuth();
   const { run, loading } = useRequest(
     async (value: any) => {
+      if (!auth.user) {
+        throw new Error('Sign in to view the wish');
+      }
+      if (!content) {
+        throw new Error('Error loading the wish');
+      }
       if (mode === 'edit') {
-        Object.keys(value).forEach((key) => {
-          if (content.hasOwnProperty(key) && value[key]) {
-            content[key] = value[key];
-          }
-        });
-        await WishService.update(
-          content, AuthService.auth.currentUser?.uid || '', content.key);
+        const newContent = {
+          ...content,
+          ...value,
+        } as IWish;
+        await WishService.update(newContent, auth.user.uid, content.key);
       } else {
         const newContent = {
           name: value.name || '',
@@ -41,8 +49,7 @@ const Index: React.FC = () => {
           state: WishService.WishState.Default,
           key: uuidv4(),
         } as IWish;
-        await WishService.add(
-          newContent, AuthService.auth.currentUser?.uid || '');
+        await WishService.add(newContent, auth.user.uid || '');
       }
     },
     {
@@ -64,19 +71,12 @@ const Index: React.FC = () => {
   const onFinish = async (value: any) => {
     await run(value);
   };
-  const submitButton = <Button isLoading={loading}>{mode === 'edit'
-    ? 'Update Item'
-    : 'Add to Wishlist'}</Button>;
+  const submitButton = <Button isLoading={loading}>{mode === 'edit' ? 'Update Item' : 'Add to Wishlist'}</Button>;
   return (
     <Center flex={1}>
       <Box safeArea flex={1} width="90%">
         <Form space={8} submitButton={submitButton} onFinish={onFinish}>
-          <FormItem
-            name="name"
-            label="Name"
-            defaultValue={content?.name}
-            rules={{ required: 'Gift Name is required' }}
-          >
+          <FormItem name="name" label="Name" defaultValue={content?.name} rules={{ required: 'Gift Name is required' }}>
             <Input />
           </FormItem>
           <FormItem name="url" label="Url" defaultValue={content?.url}>
@@ -98,11 +98,7 @@ const Index: React.FC = () => {
           <FormItem name="image" label="Image" defaultValue={content?.image}>
             <Input />
           </FormItem>
-          <FormItem
-            name="description"
-            label="Description"
-            defaultValue={content?.description}
-          >
+          <FormItem name="description" label="Description" defaultValue={content?.description}>
             <TextArea />
           </FormItem>
         </Form>

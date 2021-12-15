@@ -1,45 +1,28 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 // import { WishService } from '../../service';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTheme } from 'native-base';
 import WishListStack from '../WishList';
 import Friends from '../Friends';
 import Claimed from '../Claimed';
 import Settings from '../Settings';
-import { AuthService } from '../../service';
 
 const Tab = createMaterialBottomTabNavigator();
 
 const Index: React.FC = () => {
   const navigation = useNavigation();
-  useEffect(() => {
-    AuthService.subscribeAuth((user) => {
-      if (!user) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'SignIn' } as never],
-        });
-      }
-    });
-  }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
-  // eslint-disable-next-line no-unused-vars
-  let unsubscriber;
-  // const onNext = (snapshot: any) => {
-  //   console.log(snapshot);
-  // };
-  // useEffect(() => {
-  //   unsubscriber = WishService.onSnapShot([], onNext);
-  // }, []);
+  const { colors } = useTheme();
   return (
     <Tab.Navigator
-      activeColor="rgb(8,145,178)"
+      activeColor={(colors.primary as any)['500']}
       barStyle={{ backgroundColor: 'white' }}
     >
       <Tab.Screen
