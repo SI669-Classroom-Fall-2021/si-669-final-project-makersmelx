@@ -14,6 +14,7 @@ const Index: React.FC<IProps> = ({ source, style, children }) => {
     <Center style={style}>{children}</Center>
   ) : (
     <Image
+      resizeMode="cover"
       source={source}
       style={style}
       onError={() => {

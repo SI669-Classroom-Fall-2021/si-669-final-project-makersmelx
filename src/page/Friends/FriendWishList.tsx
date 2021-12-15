@@ -62,7 +62,7 @@ const Index: React.FC = () => {
             onNavigate={() => {
               navigation.navigate(
                 'FriendWish' as never,
-                { content: item, friendID: content.id } as never
+                { content: item, friend: content } as never
               );
             }}
           />
