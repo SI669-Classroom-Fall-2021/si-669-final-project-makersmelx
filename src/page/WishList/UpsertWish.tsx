@@ -4,25 +4,28 @@ import {
   Button,
   Center,
   Input,
-  TextArea,
-  useToast,
   Text,
+  TextArea,
+  useToast
 } from 'native-base';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
 import Form, { FormItem } from '../../component/Form';
-import { AuthService, IWish, WishService, photoService } from '../../service';
+import { IWish, PhotoService, WishService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
+import { WishParamList } from './WishParamList';
+
+type UpsertRouteProp = RouteProp<WishParamList, 'UpsertWish'>;
 
 const Index: React.FC = () => {
-  const route = useRoute();
+  const route = useRoute<UpsertRouteProp>();
   const navigation = useNavigation();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { content, mode } = route.params;
+  const content = route.params?.content;
+  const mode = route.params?.mode;
   const toast = useToast();
   const formFailToast = 'form-fail-toast';
   const [image, setImage] = useState(content?.image || '');
@@ -50,12 +53,12 @@ const Index: React.FC = () => {
     console.log(result);
 
     if (!result.cancelled) {
-      photoService.savePicture(
-        AuthService.auth.currentUser?.uid || 'Guest',
+      PhotoService.savePicture(
+        auth.user.uid || 'Guest',
         result,
-      ).then((newuri)=>{
-        setImage(newuri);
-      }
+      ).then((newuri) => {
+          setImage(newuri);
+        }
       );
     }
   };
@@ -65,20 +68,22 @@ const Index: React.FC = () => {
       headerBackTitle: 'Back',
     });
   });
+  const auth = useAuth();
   const { run, loading } = useRequest(
     async (value: any) => {
+      if (!auth.user) {
+        throw new Error('Sign in to view the wish');
+      }
       if (mode === 'edit') {
-        Object.keys(value).forEach((key) => {
-          if (content.hasOwnProperty(key) && value[key]) {
-            content[key] = value[key];
-          }
-        });
+        if (!content) {
+          throw new Error('Error loading the wish');
+        }
+        const newContent = {
+          ...content,
+          ...value,
+        } as IWish;
         content.image = image;
-        await WishService.update(
-          content,
-          AuthService.auth.currentUser?.uid || '',
-          content.key,
-        );
+        await WishService.update(newContent, auth.user.uid, content.key);
       } else {
         const newContent = {
           name: value.name || '',
@@ -90,10 +95,7 @@ const Index: React.FC = () => {
           state: WishService.WishState.Default,
           key: uuidv4(),
         } as IWish;
-        await WishService.add(
-          newContent,
-          AuthService.auth.currentUser?.uid || '',
-        );
+        await WishService.add(newContent, auth.user.uid || '');
       }
     },
     {
@@ -115,11 +117,11 @@ const Index: React.FC = () => {
   const onFinish = async (value: any) => {
     await run(value);
   };
-  const submitButton = (
-    <Button isLoading={loading}>
-      {mode === 'edit' ? 'Update Item' : 'Add to Wishlist'}
-    </Button>
-  );
+
+  const submitButton = <Button isLoading={loading}>{mode === 'edit'
+    ? 'Update Item'
+    : 'Add to Wishlist'}</Button>;
+
   return (
     <Center flex={1}>
       <Box safeArea flex={1} width="90%">
@@ -149,7 +151,7 @@ const Index: React.FC = () => {
             <Input />
           </FormItem>
           <Text fontSize={15} color='black'>Image</Text>
-          <Input value={image} marginTop = '-7'/>
+          <Input value={image} marginTop='-7' />
           <Button onPress={pickImage}> Pick an image from camera roll </Button>
           <FormItem
             name="description"

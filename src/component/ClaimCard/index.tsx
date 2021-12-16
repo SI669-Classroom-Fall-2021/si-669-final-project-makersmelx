@@ -10,18 +10,12 @@ const textProps = {
     color: 'warmGray.200',
   },
 };
-const Index: React.FC<{ content: IClaim; userID: string }> = ({
-  content,
-  userID,
-}) => {
+const Index: React.FC<{ content: IClaim; userID: string }> = ({ content, userID }) => {
   const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate(
-          'FriendWish' as never,
-          { content} as never,
-        );
+        navigation.navigate('FriendWish' as never, { content } as never);
       }}
     >
       <Box
@@ -42,22 +36,11 @@ const Index: React.FC<{ content: IClaim; userID: string }> = ({
         }}
       >
         <Center flex={1}>
-          <Row
-            alignItems="center"
-            space={4}
-            py="10px"
-            justifyContent="space-between"
-            width="95%"
-          >
+          <Row alignItems="center" space={4} py="10px" justifyContent="space-between" width="95%">
             <Column flex={0.6}>
               <ItemImage url={content.image} />
             </Column>
-            <Column
-              flex={2}
-              alignItems="flex-start"
-              space={2}
-              justifyContent="center"
-            >
+            <Column flex={2} alignItems="flex-start" space={2} justifyContent="center">
               <Text fontWeight="600" textAlign="left" {...textProps}>
                 {content.name}
               </Text>
@@ -65,9 +48,7 @@ const Index: React.FC<{ content: IClaim; userID: string }> = ({
                 {content.price}
               </Text>
               <Text fontWeight="400" textAlign="left" {...textProps}>
-                {`${content.claimedAt
-                  .toDate()
-                  .toLocaleDateString('en-US')} ${content.claimedAt
+                {`${content.claimedAt.toDate().toLocaleDateString('en-US')} ${content.claimedAt
                   .toDate()
                   .toLocaleTimeString('en-US')}`}
               </Text>
@@ -75,12 +56,7 @@ const Index: React.FC<{ content: IClaim; userID: string }> = ({
             <Row flex={1} justifyContent="flex-end">
               <Button
                 onPress={() => {
-                  ClaimService.completeClaim(
-                    userID,
-                    content.wisher,
-                    content.wishID,
-                    content.claimID,
-                  );
+                  ClaimService.completeClaim(userID, content.wisher, content.wishID, content.claimID);
                 }}
                 isDisabled={content.state === ClaimService.ClaimState.Completed}
               >

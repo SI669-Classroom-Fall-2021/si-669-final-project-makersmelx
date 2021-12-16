@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
   Box,
   Button,
@@ -16,8 +16,8 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
-import { AuthService } from '../../service';
 import { gravatarUrl } from '../../utils';
+import { useAuth } from '../../auth/AuthProvider';
 
 const textProps = {
   color: 'coolGray.600',
@@ -26,19 +26,11 @@ const textProps = {
   },
 };
 const Index: React.FC = () => {
-  const [profile, setProfile] = useState({ name: 'user', gravatar: 'none' });
   const toast = useToast();
-  useEffect(() => {
-    (async () => {
-      const p = await AuthService.getProfile();
-      if (p) {
-        setProfile(p as any);
-      }
-    })();
-  }, []);
+  const auth = useAuth();
 
   const { run: signOut, loading } = useRequest(async () => {
-    await AuthService.signOut();
+    await auth.signOut();
   }, {
     manual: true,
     onError: () => {
@@ -89,7 +81,7 @@ const Index: React.FC = () => {
           <Column flex={0.8}>
             <Image
               source={{
-                uri: gravatarUrl(profile.gravatar),
+                uri: gravatarUrl(auth.profile.gravatar),
               }}
               style={{
                 width: 60,
@@ -105,10 +97,10 @@ const Index: React.FC = () => {
             justifyContent="center"
           >
             <Text fontWeight="600" textAlign="left" {...textProps}>
-              {(profile as any).username}
+              {(auth.profile as any).username}
             </Text>
             <Text fontWeight="600" textAlign="left" {...textProps}>
-              {(profile as any).email}
+              {(auth.profile as any).email}
             </Text>
           </Column>
           <Row flex={1} justifyContent="flex-end" />

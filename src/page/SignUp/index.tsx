@@ -4,22 +4,23 @@ import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
 import PasswordInput from '../../component/PasswordInput';
-import { AuthService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
   const toast = useToast();
   const signUpErrorToast = 'signup-fail-toast';
+  const auth = useAuth();
   const { run: onFinish, loading } = useRequest(
     async (value: any) => {
       // todo: update phone number
-      await AuthService.signUp(value.email, value.password, value.username);
+      await auth.signUp(value.email, value.password, value.username);
     },
     {
       manual: true,
       onSuccess: () => {
-        if (AuthService.auth.currentUser) {
+        if (auth.user) {
           navigation.navigate('Home' as never, {} as never);
         }
       },

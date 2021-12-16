@@ -1,21 +1,22 @@
 import React, { useLayoutEffect } from 'react';
 import {
-  Box,
   Button,
   Center,
-  Heading,
-  HStack,
-  Image,
+  Column,
+  Divider,
   Link,
+  Row,
   ScrollView,
   Text,
   useToast,
-  VStack,
+  VStack
 } from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
-import { AuthService, ClaimService, IWish, WishService } from '../../service';
+import { MaterialIcons } from '@expo/vector-icons';
+import { ClaimService, WishService } from '../../service';
+import { useAuth } from '../../auth/AuthProvider';
+import LoadingImageBackground from '../../component/LoadingImageBackground';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -23,34 +24,40 @@ const Index: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const { content, friendID }: { content: IWish; friendID: string } =
-    route.params;
+  const { content, friend } = route.params;
   const toast = useToast();
-  const claimFailToast = 'claim-fail-toast';
+  const claimToast = 'claim-fail-toast';
   useLayoutEffect(() => {
     // todo: should be the friend name
     navigation.setOptions({
-      title: content.name,
+      title: `${content.name} (${friend.username})`,
     });
   });
+  const auth = useAuth();
   const { run, loading } = useRequest(
     async () => {
-      await ClaimService.claimWish(
-        AuthService.auth.currentUser?.uid || '',
-        friendID,
-        content.key,
-      );
+      if (!auth.user) {
+        throw new Error('Sign In to claim this wish');
+      }
+      await ClaimService.claimWish(auth.user.uid, friend.ID, content.key);
     },
     {
       manual: true,
       onSuccess: () => {
         navigation.goBack();
-      },
-      onError: () => {
         toast.show({
-          title: 'User not found',
+          title: `Claimed ${content.name} for ${friend.username}`,
+          status: 'success',
+          id: claimToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+      onError: (error) => {
+        toast.show({
+          title: error.message,
           status: 'error',
-          id: claimFailToast,
+          id: claimToast,
           placement: 'top',
           duration: 3000,
         });
@@ -59,80 +66,87 @@ const Index: React.FC = () => {
   );
   return (
     <Center flex={1}>
-      <Center style={{ height: '100%', width: '100%' }} bg="white">
-        <VStack style={{ height: '100%', width: '90%' }}>
-          <HStack
-            flex={0.5}
-            justifyContent="space-between"
-            alignItems="center"
-            mt={6}
-          >
-            <Heading size="lg" textAlign="left" padding={3}>
-              {content.name}
-            </Heading>
-            <Text fontSize="lg" padding={3}>{`$${content.price}`}</Text>
-          </HStack>
-
-          <Center flex={3} marginBottom={3} h="30%">
-            <Image
-              size="100%"
+      <Center height="100%" width="100%" backgroundColor="white">
+        <VStack height="100%" width="100%" space={6}>
+          <Center flex={0.8}>
+            <LoadingImageBackground
+              style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
-              mt={6}
               source={{
                 uri: content.image,
               }}
-              alt="gift"
-              borderRadius={6}
-              fallbackElement={
-                <MaterialCommunityIcons
-                  name="gift-outline"
-                  color="black"
-                  size={30}
-                />
-              }
-            />
-          </Center>
-          <Box flex={3}>
-            <Box bg="white" paddingX={5} paddingY={3} mt={2}>
-              <ScrollView>
-                <Text>{content.description}</Text>
-              </ScrollView>
-            </Box>
-            <Box
-              bg="white"
-              paddingX={5}
-              paddingY={3}
-              borderRadius={6}
-              borderColor="gray.200"
-              borderWidth={1}
             >
-              {content.url ? (
-                <Link
-                  href={content.url}
-                  isExternal
-                  _text={{
-                    _light: {
-                      color: 'cyan.500',
-                    },
-                    color: 'cyan.300',
-                  }}
-                  isUnderlined
+              <Center flex={1}>
+                <Row
+                  justifyContent="center"
+                  alignItems="center"
+                  width="100%"
+                  mt="auto"
+                  backgroundColor="rgba(0,0,0,0.4)"
                 >
-                  Tap to view in the website
+                  <Row justifyContent="space-between" width="90%" py={2}>
+                    <Text
+                      fontSize="lg"
+                      textAlign="left"
+                      color="white"
+                      fontWeight="800"
+                    >
+                      {content.name}
+                    </Text>
+                    <Text
+                      fontSize="lg"
+                      color="white"
+                      fontWeight="600"
+                    >{`$${content.price}`}</Text>
+                  </Row>
+                </Row>
+              </Center>
+            </LoadingImageBackground>
+          </Center>
+          <Column
+            width="100%"
+            space={6}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <ScrollView width="90%">
+              <Row space={3} alignItems="flex-start">
+                <MaterialIcons name="description" size={24} />
+                <Text textAlign="left" width="90%">
+                  {content.description}
+                </Text>
+              </Row>
+            </ScrollView>
+            <Divider />
+            <Row width="90%" space={3}>
+              <MaterialIcons
+                name={content.url ? 'public' : 'public-off'}
+                size={24}
+              />
+              {content.url ? (
+                <Link href={content.url} isExternal flex={1}>
+                  <Text numberOfLines={1} underline color="cyan.500">
+                    {content.url}
+                  </Text>
                 </Link>
               ) : (
-                <Text>No link</Text>
+                <Text flex={1} color="muted.500">
+                  {`${friend.username} has not provided a link yet`}
+                </Text>
               )}
-            </Box>
+            </Row>
+          </Column>
+          <Divider />
+          <Center>
             <Button
+              width="90%"
               isLoading={loading}
               isDisabled={content.state !== WishService.WishState.Default}
               onPress={run}
-              mt={10}
             >
-              Claim for my friend
+              {`Claim for ${friend.username}`}
             </Button>
-          </Box>
+          </Center>
         </VStack>
       </Center>
     </Center>

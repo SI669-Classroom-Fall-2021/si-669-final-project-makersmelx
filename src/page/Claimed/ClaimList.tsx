@@ -5,29 +5,24 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import firebase from 'firebase/compat';
-import { AuthService, IClaim, ClaimService } from '../../service';
+import { ClaimService, IClaim } from '../../service';
 import ClaimCard from '../../component/ClaimCard';
+import { useAuth } from '../../auth/AuthProvider';
 
 const ClaimList: React.FC = () => {
   const [claimList, setClaimList] = useState<IClaim[]>([]);
-  const [userID, setUserID] = useState('');
   const swipeListRef = useRef(null);
   const navigation = useNavigation();
-  useEffect(() => {
-    AuthService.auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserID(AuthService.auth.currentUser?.uid || '');
-      }
-    });
-  }, []);
+
   let unsubscription: firebase.Unsubscribe;
+  const auth = useAuth();
   useEffect(() => {
-    if (userID) {
+    if (auth.user) {
       if (unsubscription) {
         unsubscription();
       }
       unsubscription = ClaimService.onSnapshotUserClaim(
-        userID, (qSnap: { docs: any[] }) => {
+        auth.user.uid, (qSnap: { docs: any[] }) => {
           const updateList: IClaim[] = [];
           qSnap.docs.forEach((doc: { data: () => any; id: any }) => {
             const claimItemTmp = doc.data();
@@ -41,7 +36,7 @@ const ClaimList: React.FC = () => {
         });
     }
     return unsubscription;
-  }, [userID]);
+  }, [auth.user.uid]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -64,7 +59,9 @@ const ClaimList: React.FC = () => {
         <VStack w="0" ml="auto" />
         <Pressable
           w="100"
-          bg={item.state === ClaimService.ClaimState.Completed? "gray.500":"red.500"}
+          bg={item.state === ClaimService.ClaimState.Completed
+            ? 'gray.500'
+            : 'red.500'}
           _pressed={{
             opacity: 0.5,
           }}
@@ -72,9 +69,10 @@ const ClaimList: React.FC = () => {
             opacity: 0.5,
           }}
           onPress={async () => {
-            await ClaimService.declaimWish(userID, item.wisher,item.wishID,item.claimID);
+            await ClaimService.declaimWish(
+              auth.user.uid, item.wisher, item.wishID, item.claimID);
           }}
-          disabled = {item.state === ClaimService.ClaimState.Completed}
+          disabled={item.state === ClaimService.ClaimState.Completed}
         >
           <Center flex={1}>
             <VStack alignItems="center">
@@ -97,9 +95,10 @@ const ClaimList: React.FC = () => {
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
       <SwipeListView
         data={claimList}
-        renderItem={({ item }) => (item.name
-          ? <ClaimCard content={item} userID={userID} />
-          : null)}
+        renderItem={({ item }) => (item.name ? <ClaimCard
+          content={item}
+          userID={auth.user.uid}
+        /> : null)}
         ref={swipeListRef}
         keyExtractor={(item) => item.claimID}
         renderHiddenItem={renderHiddenItem}

@@ -4,27 +4,21 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AuthService, FriendService, IFriend } from '../../service';
+import { FriendService, IFriend } from '../../service';
 import FriendCard from './FriendCard';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const [friendList, setFriendList] = useState<IFriend[]>([]);
-  const [userID, setUserID] = useState('');
-  useEffect(() => {
-    AuthService.auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserID(user.uid);
-      }
-    });
-  }, []);
+  const auth = useAuth();
   let unsubscribe: any;
   useEffect(() => {
-    if (userID) {
+    if (auth.user) {
       if (unsubscribe) {
         unsubscribe();
       }
       unsubscribe = FriendService.onSnapshotUserFriend(
-        userID, (qSnap: { docs: any[] }) => {
+        auth.user.uid, (qSnap: { docs: any[] }) => {
           const updateList: IFriend[] = [];
           qSnap.docs.forEach(async (doc: { data: () => any; id: any }) => {
             const friendItemTmp = doc.data();
@@ -37,7 +31,7 @@ const Index: React.FC = () => {
         });
     }
     return unsubscribe;
-  }, [userID]);
+  }, [auth.user]);
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -66,7 +60,7 @@ const Index: React.FC = () => {
             opacity: 0.5,
           }}
           onPress={async () => {
-            await FriendService.delete(item.ID, userID);
+            await FriendService.delete(item.ID, auth.user.uid);
           }}
         >
           <Center flex={1}>

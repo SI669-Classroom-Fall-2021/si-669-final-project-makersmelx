@@ -1,75 +1,73 @@
 import React from 'react';
-import { Box, Center, Column, Pressable, Row, Text } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import { IWish } from '../../service';
-import ItemImage from './ItemImage';
+import { Column, Text } from 'native-base';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { IWish, WishService } from '../../service';
+import CompactListItem from '../CompactListItem';
 import ClaimBadge from './ClaimBadge';
-
-const textProps = {
-  color: 'coolGray.600',
-  _dark: {
-    color: 'warmGray.200',
-  },
-};
+import LazyLoadImage from '../LazyLoadImage';
 
 interface IProps {
   content: IWish;
-  editable?: boolean;
-  friendID: string;
+  onNavigate?: () => void;
 }
 
-const Index: React.FC<IProps> = ({ content, editable, friendID }) => {
-  const navigation = useNavigation();
-  return (
-    <Pressable
-      onPress={() => {
-        // todo: really silly
-        if (editable) {
-          navigation.navigate('UpsertWish' as never, { content, mode: 'edit' } as never);
-        } else {
-          // Display
-          navigation.navigate('FriendWish' as never, { content, friendID } as never);
-        }
-      }}
-    >
-      <Box
-        width="100%"
-        overflow="hidden"
-        borderColor="coolGray.200"
-        borderWidth="1"
-        _dark={{
-          borderColor: 'coolGray.600',
-          backgroundColor: 'gray.700',
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-        _light={{
-          backgroundColor: 'white',
-        }}
+const getDate = (content: IWish) => {
+  let ret;
+  switch (content.state) {
+    case WishService.WishState.Completed:
+      ret = content.completedBy || content.claimedBy || content.createdAt;
+      break;
+    case WishService.WishState.Claimed:
+      ret = content.claimedBy || content.createdAt;
+      break;
+    case WishService.WishState.Default:
+    default:
+      ret = content.createdAt;
+      break;
+  }
+  return ret.toDate().toLocaleDateString('en-us');
+}
+
+const Index: React.FC<IProps> = ({ content, onNavigate }) => (
+  <CompactListItem
+    onPress={onNavigate}
+    avatar={
+      <LazyLoadImage
+        source={{ uri: content.image }}
+        style={{ width: 60, height: 60, borderRadius: 100 }}
       >
-        <Center flex={1}>
-          <Row alignItems="center" space={4} py="10px" justifyContent="space-between" width="95%">
-            <Column flex={0.6}>
-              <ItemImage content={content} />
-            </Column>
-            <Column flex={2} alignItems="flex-start" space={2} justifyContent="center">
-              <Text fontWeight="600" textAlign="left" {...textProps}>
-                {content.name}
-              </Text>
-              <Text fontWeight="400" textAlign="left" {...textProps}>
-                {`$${content.price}`}
-              </Text>
-            </Column>
-            <Row flex={1} justifyContent="flex-end">
-              <ClaimBadge content={content} />
-            </Row>
-          </Row>
-        </Center>
-      </Box>
-    </Pressable>
-  );
-};
+        <MaterialCommunityIcons
+          name="gift-outline"
+          color="black"
+          size={30}
+        />
+      </LazyLoadImage>
+    }
+    content={
+      <Column justifyContent="flex-start" space={2}>
+        <Text
+          fontWeight="600"
+          textAlign="left"
+          numberOfLines={1}
+          fontSize={16}
+        >
+          {content.name}
+        </Text>
+        <ClaimBadge content={content} />
+      </Column>
+    }
+    extra={
+      <Column justifyContent="flex-start" space={2}>
+        <Text textAlign="right" numberOfLines={1} color="muted.500">
+          {getDate(content)}
+        </Text>
+        <Text textAlign="right" numberOfLines={1}>
+          {`$${content.price}`}
+        </Text>
+      </Column>
+    }
+  />
+);
 
 export default Index;
