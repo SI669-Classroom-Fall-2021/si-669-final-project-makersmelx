@@ -87,11 +87,10 @@ const Index: React.FC = () => {
                 navigation.navigate('SignUp' as never, {} as never);
               }}
               _text={{
-                color: 'indigo.500',
+                color: 'primary.500',
                 fontWeight: 'medium',
                 fontSize: 'sm',
               }}
-              href="#"
             >
               Sign Up
             </Link>
