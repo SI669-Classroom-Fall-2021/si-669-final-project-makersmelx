@@ -1,5 +1,5 @@
 import React, { cloneElement, ReactElement } from 'react';
-import { Platform } from "react-native"
+import { Platform } from 'react-native';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   Box,
@@ -39,10 +39,17 @@ const Index: React.FC<IForm> = ({
         onPress: formMethods.handleSubmit(onFinish, onError),
       })
     ));
+
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
   return (
     <FormProvider {...formMethods}>
       <Box {...rest}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : "height"}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios"
+            ? "position"
+            : "height"}
+          keyboardVerticalOffset={keyboardVerticalOffset}
+        >
           <ScrollView>
             <Column space={space * 2}>
               <Column space={space}>

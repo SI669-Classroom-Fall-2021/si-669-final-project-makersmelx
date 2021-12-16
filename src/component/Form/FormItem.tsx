@@ -1,5 +1,9 @@
 import React, { cloneElement, ReactElement } from 'react';
-import { RegisterOptions, useController, useFormContext } from 'react-hook-form';
+import {
+  RegisterOptions,
+  useController,
+  useFormContext
+} from 'react-hook-form';
 import { Box, Center, FormControl, IBoxProps } from 'native-base';
 
 interface IItem extends IBoxProps {
