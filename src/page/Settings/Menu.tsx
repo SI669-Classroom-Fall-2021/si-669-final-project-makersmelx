@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
+
 import { gravatarUrl } from '../../utils';
 import { useAuth } from '../../auth/AuthProvider';
 
@@ -28,11 +29,17 @@ const textProps = {
 const Index: React.FC = () => {
   const toast = useToast();
   const auth = useAuth();
-
+  const navigation = useNavigation();
   const { run: signOut, loading } = useRequest(async () => {
     await auth.signOut();
   }, {
     manual: true,
+    onSuccess: () => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'SignIn' }] as never,
+      });
+    },
     onError: () => {
       toast.show({
         title: 'Sign Out Failed',
@@ -41,9 +48,8 @@ const Index: React.FC = () => {
         duration: 3000,
       });
     }
-  })
+  });
 
-  const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Settings',
@@ -150,7 +156,7 @@ const Index: React.FC = () => {
         <Button
           mt={12}
           width="90%"
-          bg='red.500'
+          bg="red.500"
           isLoading={loading}
           onPress={async () => {
             await signOut();
