@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image } from 'react-native-elements';
-import { Center } from 'native-base';
+import { Center, Spinner } from 'native-base';
 import { ImageSourcePropType, ImageStyle, StyleProp } from 'react-native';
 
 interface IProps {
@@ -10,17 +10,22 @@ interface IProps {
 
 const Index: React.FC<IProps> = ({ source, style, children }) => {
   const [fallback, setFallBack] = useState(false);
-  return fallback || !source ? (
-    <Center style={style}>{children}</Center>
-  ) : (
-    <Image
-      resizeMode="cover"
-      source={source}
-      style={style}
-      onError={() => {
-        setFallBack(true);
-      }}
-    />
+  return useMemo(
+    () =>
+      fallback || !source ? (
+        <Center style={style}>{children}</Center>
+      ) : (
+        <Image
+          resizeMode="cover"
+          source={source}
+          style={style}
+          onError={() => {
+            setFallBack(true);
+          }}
+          PlaceholderContent={<Spinner color="gray.500" />}
+        />
+      ),
+    [fallback],
   );
 };
 

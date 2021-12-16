@@ -13,10 +13,10 @@ import {
 } from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
-import { ImageBackground } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ClaimService, WishService } from '../../service';
 import { useAuth } from '../../auth/AuthProvider';
+import LoadingImageBackground from '../../component/LoadingImageBackground';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -69,7 +69,7 @@ const Index: React.FC = () => {
       <Center height="100%" width="100%" backgroundColor="white">
         <VStack height="100%" width="100%" space={6}>
           <Center flex={0.8}>
-            <ImageBackground
+            <LoadingImageBackground
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
               source={{
@@ -101,7 +101,7 @@ const Index: React.FC = () => {
                   </Row>
                 </Row>
               </Center>
-            </ImageBackground>
+            </LoadingImageBackground>
           </Center>
           <Column
             width="100%"
