@@ -102,7 +102,11 @@ const Index: React.FC = () => {
       />
       <Fab
         size="sm"
-        icon={<MaterialCommunityIcons name="plus" color="white" size={26} />}
+        icon={<MaterialCommunityIcons
+          name="account-multiple-plus"
+          color="white"
+          size={26}
+        />}
         renderInPortal={false}
         onPress={() => {
           if (swipeListRef && swipeListRef.current) {

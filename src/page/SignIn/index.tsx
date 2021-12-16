@@ -1,10 +1,9 @@
 import React, { useLayoutEffect } from 'react';
 import {
-  Box,
   Button,
   Center,
+  Column,
   Heading,
-  Input,
   Link,
   Row,
   Text,
@@ -12,7 +11,9 @@ import {
 } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
+
 import Form, { FormItem } from '../../component/Form';
+import MaterialInput from '../../component/MaterialInput';
 import PasswordInput from '../../component/PasswordInput';
 import { useAuth } from '../../auth/AuthProvider';
 
@@ -45,58 +46,57 @@ const Index: React.FC = () => {
     },
   );
   return (
-    <Center flex={1}>
-      <Box safeArea width="90%">
+    <Center flex={1} bg="white">
+      <Column safeArea width="100%" space={8} alignItems="center">
         <Heading size="lg">Wishlist</Heading>
-        <Box mt={8}>
-          <Form
-            space={6}
-            submitButton={<Button isLoading={loading}>Sign In</Button>}
-            onFinish={run}
+        <Form
+          space={6}
+          submitButton={<Button isLoading={loading}>Sign In</Button>}
+          onFinish={run}
+          width="90%"
+        >
+          <FormItem
+            name="email"
+            label="Email"
+            defaultValue=""
+            rules={{
+              required: 'Email is required',
+              pattern: {
+                value:
+                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: 'Invalid email',
+              },
+            }}
           >
-            <FormItem
-              name="email"
-              label="Email"
-              defaultValue=""
-              rules={{
-                required: 'Email is required',
-                pattern: {
-                  value:
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  message: 'Invalid email',
-                },
-              }}
-            >
-              <Input />
-            </FormItem>
-            <FormItem
-              name="password"
-              label="Password"
-              defaultValue=""
-              rules={{
-                required: 'Password is required',
-              }}
-            >
-              <PasswordInput />
-            </FormItem>
-          </Form>
-          <Row mt="8" justifyContent="center">
-            <Text fontSize="sm">{"I'm a new user. "}</Text>
-            <Link
-              onPress={() => {
-                navigation.navigate('SignUp' as never, {} as never);
-              }}
-              _text={{
-                color: 'primary.500',
-                fontWeight: 'medium',
-                fontSize: 'sm',
-              }}
-            >
-              Sign Up
-            </Link>
-          </Row>
-        </Box>
-      </Box>
+            <MaterialInput iconName="email" />
+          </FormItem>
+          <FormItem
+            name="password"
+            label="Password"
+            defaultValue=""
+            rules={{
+              required: 'Password is required',
+            }}
+          >
+            <PasswordInput />
+          </FormItem>
+        </Form>
+        <Row justifyContent="center">
+          <Text fontSize="sm">{"I'm a new user. "}</Text>
+          <Link
+            onPress={() => {
+              navigation.navigate('SignUp' as never, {} as never);
+            }}
+            _text={{
+              color: 'primary.500',
+              fontWeight: 'medium',
+              fontSize: 'sm',
+            }}
+          >
+            Sign Up
+          </Link>
+        </Row>
+      </Column>
     </Center>
   );
 };

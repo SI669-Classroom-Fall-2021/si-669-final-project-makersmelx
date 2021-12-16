@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Icon, IInputProps, Input, Pressable } from 'native-base';
+import { Icon, IInputProps, Pressable } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
+import MaterialInput from '../MaterialInput';
 
 const Index = React.forwardRef(
   (props: IInputProps, ref: React.Ref<HTMLInputElement>) => {
@@ -21,7 +22,8 @@ const Index = React.forwardRef(
         />
       </Pressable>
     );
-    return <Input
+    return <MaterialInput
+      iconName="lock"
       ref={ref} {...props}
       type={type}
       InputRightElement={rightIcon}

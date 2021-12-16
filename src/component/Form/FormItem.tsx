@@ -4,9 +4,9 @@ import {
   useController,
   useFormContext
 } from 'react-hook-form';
-import { FormControl } from 'native-base';
+import { Box, Center, FormControl, IBoxProps } from 'native-base';
 
-interface IItem {
+interface IItem extends IBoxProps {
   name?: string;
   label?: string;
   defaultValue: any;
@@ -21,6 +21,7 @@ const Index: React.FC<IItem> = ({
   defaultValue,
   helperText,
   rules,
+  ...rest
 }) => {
   const formContext = useFormContext();
   const { control, formState: { errors } } = formContext;
@@ -46,13 +47,17 @@ const Index: React.FC<IItem> = ({
     >{errors[name].message}</FormControl.HelperText>
   ) : null;
   return (
-    <FormControl isRequired={rules?.required as boolean}>
-      <FormControl.Label>{label}</FormControl.Label>
-      {firstChild}
-      {errorTextComponent}
-      {helperTextComponent}
-      {restChildren}
-    </FormControl>
+    <Center>
+      <Box width="100%" {...rest}>
+        <FormControl isRequired={rules?.required as boolean}>
+          <FormControl.Label>{label}</FormControl.Label>
+          {firstChild}
+          {errorTextComponent}
+          {helperTextComponent}
+          {restChildren}
+        </FormControl>
+      </Box>
+    </Center>
   );
 };
 
