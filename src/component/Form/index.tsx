@@ -6,8 +6,7 @@ import {
   Button,
   Column,
   IBoxProps,
-  KeyboardAvoidingView,
-  ScrollView
+  KeyboardAvoidingView
 } from 'native-base';
 import FormItem from './FormItem';
 
@@ -50,14 +49,12 @@ const Index: React.FC<IForm> = ({
             : "height"}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
-          <ScrollView>
-            <Column space={space * 2}>
-              <Column space={space}>
-                {children}
-              </Column>
-              {button}
+          <Column space={space * 2}>
+            <Column space={space}>
+              {children}
             </Column>
-          </ScrollView>
+            {button}
+          </Column>
         </KeyboardAvoidingView>
       </Box>
     </FormProvider>

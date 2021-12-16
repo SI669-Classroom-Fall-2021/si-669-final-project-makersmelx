@@ -4,7 +4,6 @@ import {
   Center,
   Column,
   Heading,
-  Input,
   Link,
   Row,
   Text,
@@ -12,7 +11,9 @@ import {
 } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
+
 import Form, { FormItem } from '../../component/Form';
+import MaterialInput from '../../component/MaterialInput';
 import PasswordInput from '../../component/PasswordInput';
 import { useAuth } from '../../auth/AuthProvider';
 
@@ -46,7 +47,7 @@ const Index: React.FC = () => {
   );
   return (
     <Center flex={1} bg="white">
-      <Column safeArea width="90%" space={8} alignItems="center">
+      <Column safeArea width="100%" space={8} alignItems="center">
         <Heading size="lg">Wishlist</Heading>
         <Form
           space={6}
@@ -67,7 +68,7 @@ const Index: React.FC = () => {
               },
             }}
           >
-            <Input />
+            <MaterialInput iconName="email" />
           </FormItem>
           <FormItem
             name="password"

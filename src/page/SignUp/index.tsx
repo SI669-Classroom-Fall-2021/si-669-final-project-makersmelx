@@ -3,6 +3,7 @@ import { Button, Column, Input, useToast } from 'native-base';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
 import PasswordInput from '../../component/PasswordInput';
+import MaterialInput from '../../component/MaterialInput';
 import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
@@ -34,13 +35,13 @@ const Index: React.FC = () => {
       alignItems="center"
       height="100%"
       bg="white"
+      safeArea
     >
       <Form
         space={6}
         submitButton={<Button isLoading={loading}>Sign Up</Button>}
         onFinish={onFinish}
-        safeArea
-        width="81%"
+        width="90%"
         height="100%"
       >
         <FormItem
@@ -56,7 +57,7 @@ const Index: React.FC = () => {
             },
           }}
         >
-          <Input />
+          <MaterialInput iconName="email" />
         </FormItem>
         <FormItem
           name="password"
@@ -105,7 +106,7 @@ const Index: React.FC = () => {
             required: 'Username is required',
           }}
         >
-          <Input />
+          <MaterialInput iconName="account" />
         </FormItem>
         <FormItem
           name="phoneNumber"
@@ -119,7 +120,7 @@ const Index: React.FC = () => {
             },
           }}
         >
-          <Input />
+          <MaterialInput iconName="phone" />
         </FormItem>
       </Form>
     </Column>

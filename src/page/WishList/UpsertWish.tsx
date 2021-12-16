@@ -2,8 +2,8 @@ import React, { useLayoutEffect, useState } from 'react';
 import {
   Box,
   Button,
-  Center,
-  Input,
+  Column,
+  ScrollView,
   Text,
   TextArea,
   useToast
@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
 import Form, { FormItem } from '../../component/Form';
 import { IWish, PhotoService, WishService } from '../../service';
+import MaterialInput from '../../component/MaterialInput';
 import { useAuth } from '../../auth/AuthProvider';
 import { WishParamList } from './WishParamList';
 
@@ -30,46 +31,50 @@ const Index: React.FC = () => {
   const formFailToast = 'form-fail-toast';
   const [image, setImage] = useState(content?.image || '');
   const auth = useAuth();
+  const isEdit = mode === 'edit';
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackTitle: 'Back',
+      headerBackTitle: 'Wish list',
+      title: isEdit ? `Edit my wish` : 'Make a new Wish',
     });
   });
 
-  const { run: uploadImage, loading: uploadingImage } = useRequest(async () => {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        throw new Error("We need your camera permission to upload your photos")
+  const { run: uploadImage, loading: uploadingImage } = useRequest(
+    async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          throw new Error(
+            'We need your camera permission to upload your photos');
+        }
       }
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.1,
-    });
-
-    if (!result.cancelled) {
-      const newUri = await PhotoService.savePicture(
-        auth.user.uid || 'Guest',
-        result,
-      );
-      setImage(newUri);
-    }
-  }, {
-    manual: true,
-    onError: (error) => {
-      toast.show({
-        title: error.message,
-        status: 'error',
-        id: formFailToast,
-        placement: 'top',
-        duration: 3000,
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.1,
       });
-    }
-  })
+
+      if (!result.cancelled) {
+        const newUri = await PhotoService.savePicture(
+          auth.user.uid || 'Guest', result);
+        setImage(newUri);
+      }
+    },
+    {
+      manual: true,
+      onError: (error) => {
+        toast.show({
+          title: error.message,
+          status: 'error',
+          id: formFailToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+    },
+  );
 
   const { run, loading } = useRequest(
     async (value: any) => {
@@ -125,47 +130,65 @@ const Index: React.FC = () => {
     : 'Add to Wishlist'}</Button>;
 
   return (
-    <Center flex={1}>
-      <Box safeArea flex={1} width="90%">
-        <Form space={8} submitButton={submitButton} onFinish={onFinish}>
-          <FormItem
-            name="name"
-            label="Name"
-            defaultValue={content?.name}
-            rules={{ required: 'Gift Name is required' }}
+    <Box bg="white">
+      <ScrollView>
+        <Column
+          safeArea
+          justifyContent="flex-start"
+          alignItems="center"
+        >
+          <Form
+            space={6}
+            submitButton={submitButton}
+            onFinish={onFinish}
+            width="90%"
           >
-            <Input />
-          </FormItem>
-          <FormItem name="url" label="Url" defaultValue={content?.url}>
-            <Input />
-          </FormItem>
-          <FormItem
-            name="price"
-            label="Price"
-            defaultValue={content?.price}
-            rules={{
-              pattern: {
-                value: /^\d+$/g,
-                message: 'Price must be numbers',
-              },
-            }}
-          >
-            <Input />
-          </FormItem>
-          <Text fontSize={15} color='black'>Image</Text>
-          <Input value={image} marginTop='-7' />
-          <Button onPress={uploadImage} isLoading={uploadingImage}> Pick an
-            image from camera roll </Button>
-          <FormItem
-            name="description"
-            label="Description"
-            defaultValue={content?.description}
-          >
-            <TextArea />
-          </FormItem>
-        </Form>
-      </Box>
-    </Center>
+            <FormItem
+              name="name"
+              label="Name"
+              defaultValue={content?.name}
+              rules={{ required: 'Gift Name is required' }}
+            >
+              <MaterialInput iconName="gift" />
+            </FormItem>
+            <FormItem name="url" label="Url" defaultValue={content?.url}>
+              <MaterialInput iconName="earth" />
+            </FormItem>
+            <FormItem
+              name="price"
+              label="Price"
+              defaultValue={content?.price}
+              rules={{
+                pattern: {
+                  value: /^\d+$/g,
+                  message: 'Price must be numbers',
+                },
+              }}
+            >
+              <MaterialInput iconName="currency-usd" />
+            </FormItem>
+            <Text fontSize={15} color="black">
+              Image
+            </Text>
+            <MaterialInput
+              value={image}
+              iconName="image"
+            />
+            <Button onPress={uploadImage} isLoading={uploadingImage}>
+              {' '}
+              Pick an image from camera roll{' '}
+            </Button>
+            <FormItem
+              name="description"
+              label="Description"
+              defaultValue={content?.description}
+            >
+              <TextArea />
+            </FormItem>
+          </Form>
+        </Column>
+      </ScrollView>
+    </Box>
   );
 };
 

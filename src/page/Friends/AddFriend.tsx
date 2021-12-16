@@ -1,10 +1,11 @@
 import React, { useLayoutEffect } from 'react';
-import { Box, Button, Center, Heading, Input, useToast } from 'native-base';
+import { Button, Center, Column, Heading, useToast } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
 import { FriendService } from '../../service';
 import { useAuth } from '../../auth/AuthProvider';
+import MaterialInput from '../../component/MaterialInput';
 
 const AddFriend: React.FC = () => {
   const navigation = useNavigation();
@@ -43,32 +44,37 @@ const AddFriend: React.FC = () => {
   );
   return (
     <Center flex={1}>
-      <Box safeArea width="90%">
-        <Heading size="lg">Friend List</Heading>
-        <Box>
-          <Form
-            space={6}
-            submitButton={<Button isLoading={loading}>Add Friend</Button>}
-            onFinish={run}
+      <Column
+        safeArea
+        width="100%"
+        alignItems="center"
+        justifyContent="center"
+        space={16}
+      >
+        <Heading size="lg">Find your friends by email</Heading>
+        <Form
+          space={6}
+          submitButton={<Button isLoading={loading}>Add Friend</Button>}
+          onFinish={run}
+          width="90%"
+        >
+          <FormItem
+            name="email"
+            label="Email"
+            defaultValue=""
+            rules={{
+              required: 'Email is required',
+              pattern: {
+                value:
+                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: 'Invalid email',
+              },
+            }}
           >
-            <FormItem
-              name="email"
-              label="Email"
-              defaultValue=""
-              rules={{
-                required: 'Email is required',
-                pattern: {
-                  value:
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  message: 'Invalid email',
-                },
-              }}
-            >
-              <Input />
-            </FormItem>
-          </Form>
-        </Box>
-      </Box>
+            <MaterialInput iconName="email" />
+          </FormItem>
+        </Form>
+      </Column>
     </Center>
   );
 };

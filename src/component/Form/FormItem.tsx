@@ -47,8 +47,8 @@ const Index: React.FC<IItem> = ({
     >{errors[name].message}</FormControl.HelperText>
   ) : null;
   return (
-    <Center flex={1}>
-      <Box width="100%" height="100%" {...rest}>
+    <Center>
+      <Box width="100%" {...rest}>
         <FormControl isRequired={rules?.required as boolean}>
           <FormControl.Label>{label}</FormControl.Label>
           {firstChild}
