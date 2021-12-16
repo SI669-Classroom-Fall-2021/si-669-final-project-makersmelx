@@ -11,9 +11,14 @@ const Index: React.FC = () => {
   const auth = useAuth();
   return (
     <Stack.Navigator initialRouteName={auth.user ? 'Home' : 'SignIn'}>
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="SignIn" component={SignIn} />
+      {auth.user ? (
+        <Stack.Screen name="Home" component={Home} />
+      ) : (
+        <>
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="SignIn" component={SignIn} />
+        </>
+      )}
     </Stack.Navigator>
   );
 };

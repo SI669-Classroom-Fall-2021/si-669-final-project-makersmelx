@@ -19,6 +19,7 @@ import {
   setDoc,
   where
 } from 'firebase/firestore';
+import firebase from 'firebase/compat';
 import database, { collectionName } from '../database';
 import { ClaimService, FriendService, WishService } from '../service';
 
@@ -30,13 +31,7 @@ const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | null>();
   const [profile, setProfile] = useState<any>();
   const auth = getAuth();
-  useEffect(() => {
-    auth.onAuthStateChanged((userSnapshot) => {
-      if (userSnapshot) {
-        setUser(userSnapshot)
-      }
-    });
-  }, []);
+
   const AuthService = {
     async signUp(email: string, password: string, username: string) {
       const credential = await createUserWithEmailAndPassword(
@@ -63,6 +58,7 @@ const AuthProvider: React.FC = ({ children }) => {
       await updateProfile(credential.user, {
         displayName: username,
       });
+      await AuthService.signIn(email, password);
     },
     async signIn(email: string, password: string) {
       await signInWithEmailAndPassword(auth, email, password);
@@ -95,6 +91,24 @@ const AuthProvider: React.FC = ({ children }) => {
       return onAuthStateChanged(auth, nextObserver);
     },
   };
+
+  let unsubscribe: firebase.Unsubscribe;
+  useEffect(() => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+    unsubscribe = auth.onAuthStateChanged((userSnapshot) => {
+      if (userSnapshot) {
+        setUser(userSnapshot)
+      }
+    });
+    if (user) {
+      AuthService.getProfile().then((ret) => {
+        setProfile(ret);
+      })
+    }
+    return unsubscribe;
+  }, [user]);
 
   const value = {
     user,

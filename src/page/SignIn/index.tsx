@@ -33,9 +33,6 @@ const Index: React.FC = () => {
     },
     {
       manual: true,
-      onSuccess: () => {
-        navigation.navigate('Home' as never, {} as never);
-      },
       onError: () => {
         toast.show({
           title: 'Password does not match',

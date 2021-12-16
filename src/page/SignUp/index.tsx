@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Button, Center, Input, useToast } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
 import { useRequest } from 'ahooks';
 import Form, { FormItem } from '../../component/Form';
 import PasswordInput from '../../component/PasswordInput';
@@ -8,7 +7,6 @@ import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
   const toast = useToast();
   const signUpErrorToast = 'signup-fail-toast';
   const auth = useAuth();
@@ -19,11 +17,6 @@ const Index: React.FC = () => {
     },
     {
       manual: true,
-      onSuccess: () => {
-        if (auth.user) {
-          navigation.navigate('Home' as never, {} as never);
-        }
-      },
       onError: (error) => {
         toast.show({
           title: error.message,
@@ -49,30 +42,6 @@ const Index: React.FC = () => {
                 value:
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                 message: 'Invalid email',
-              },
-            }}
-          >
-            <Input />
-          </FormItem>
-          <FormItem
-            name="username"
-            label="Username"
-            defaultValue=""
-            rules={{
-              required: 'Username is required',
-            }}
-          >
-            <Input />
-          </FormItem>
-          <FormItem
-            name="phoneNumber"
-            label="Phone Number"
-            defaultValue=""
-            rules={{
-              required: 'Phone Number is required',
-              pattern: {
-                value: /^\d+$/g,
-                message: 'Invalid phone number',
               },
             }}
           >
@@ -113,6 +82,30 @@ const Index: React.FC = () => {
             }}
           >
             <PasswordInput />
+          </FormItem>
+          <FormItem
+            name="username"
+            label="Username"
+            defaultValue=""
+            rules={{
+              required: 'Username is required',
+            }}
+          >
+            <Input />
+          </FormItem>
+          <FormItem
+            name="phoneNumber"
+            label="Phone Number"
+            defaultValue=""
+            rules={{
+              required: 'Phone Number is required',
+              pattern: {
+                value: /^\d+$/g,
+                message: 'Invalid phone number',
+              },
+            }}
+          >
+            <Input />
           </FormItem>
         </Form>
       </Box>
