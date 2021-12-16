@@ -1,4 +1,5 @@
 import React, { cloneElement, ReactElement } from 'react';
+import { Platform } from "react-native"
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   Box,
@@ -41,7 +42,7 @@ const Index: React.FC<IForm> = ({
   return (
     <FormProvider {...formMethods}>
       <Box {...rest}>
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : "height"}>
           <ScrollView>
             <Column space={space * 2}>
               <Column space={space}>

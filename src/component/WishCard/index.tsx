@@ -47,7 +47,7 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
     content={
       <Column justifyContent="flex-start" space={2}>
         <Text
-          fontWeight="600"
+          fontWeight="medium"
           textAlign="left"
           numberOfLines={1}
           fontSize={16}
@@ -59,7 +59,7 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
     }
     extra={
       <Column justifyContent="flex-start" space={2}>
-        <Text textAlign="right" numberOfLines={1} color="muted.500">
+        <Text textAlign="right" numberOfLines={1} color="gray.500">
           {getDate(content)}
         </Text>
         <Text textAlign="right" numberOfLines={1}>
