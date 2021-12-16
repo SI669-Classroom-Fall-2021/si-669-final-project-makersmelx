@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -29,20 +29,21 @@ const Index: React.FC = () => {
   const toast = useToast();
   const formFailToast = 'form-fail-toast';
   const [image, setImage] = useState(content?.image || '');
+  const auth = useAuth();
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: 'Back',
+    });
+  });
+
+  const { run: uploadImage, loading: uploadingImage } = useRequest(async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        throw new Error("We need your camera permission to upload your photos")
       }
-    })();
-  }, []);
-
-  const pickImage = async () => {
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -50,25 +51,26 @@ const Index: React.FC = () => {
       quality: 0.1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
-      PhotoService.savePicture(
+      const newUri = await PhotoService.savePicture(
         auth.user.uid || 'Guest',
         result,
-      ).then((newuri) => {
-          setImage(newuri);
-        }
       );
+      setImage(newUri);
     }
-  };
+  }, {
+    manual: true,
+    onError: (error) => {
+      toast.show({
+        title: error.message,
+        status: 'error',
+        id: formFailToast,
+        placement: 'top',
+        duration: 3000,
+      });
+    }
+  })
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerBackTitle: 'Back',
-    });
-  });
-  const auth = useAuth();
   const { run, loading } = useRequest(
     async (value: any) => {
       if (!auth.user) {
@@ -82,7 +84,7 @@ const Index: React.FC = () => {
           ...content,
           ...value,
         } as IWish;
-        content.image = image;
+        newContent.image = image;
         await WishService.update(newContent, auth.user.uid, content.key);
       } else {
         const newContent = {
@@ -152,7 +154,8 @@ const Index: React.FC = () => {
           </FormItem>
           <Text fontSize={15} color='black'>Image</Text>
           <Input value={image} marginTop='-7' />
-          <Button onPress={pickImage}> Pick an image from camera roll </Button>
+          <Button onPress={uploadImage} isLoading={uploadingImage}> Pick an
+            image from camera roll </Button>
           <FormItem
             name="description"
             label="Description"
