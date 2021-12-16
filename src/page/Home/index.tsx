@@ -31,7 +31,7 @@ const Index: React.FC = () => {
         options={{
           tabBarLabel: 'Wish List',
           tabBarIcon: (props: any) => <MaterialCommunityIcons
-            name={props.focused ? 'gift' : 'gift-outline'}
+            name={props.focused ? 'heart' : 'heart-outline'}
             color={props.color}
             size={26}
           />
