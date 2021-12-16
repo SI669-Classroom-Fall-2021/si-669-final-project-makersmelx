@@ -24,17 +24,38 @@ const Index: React.FC<IProps> = ({ onPress, avatar, content, extra }) => (
         backgroundColor: 'white',
       }}
     >
-      <Box ml='auto' width="80%" borderColor="gray.300" borderBottomWidth="1" />
       <Center flex={1}>
-        <Box width="95%" py={2}>
-          <Row alignItems="center" space={2} justifyContent="flex-start" flex={1}>
-            <Column>{avatar}</Column>
-            <Column flex={1} height="100%" width="100%">
-              {content}
-            </Column>
-            <Column alignItems="flex-end" marginLeft="auto" height="100%">
-              {extra}
-            </Column>
+        <Box>
+          <Row alignItems="center" space={2} justifyContent="flex-start" flex={1} height="100%" width="100%">
+            <Column pl={2} py={2}>{avatar}</Column>
+            <Row
+              alignItems="center"
+              space={2}
+              justifyContent="flex-start"
+              flex={1}
+              height="100%"
+              width="100%"
+              borderColor="gray.300"
+              borderBottomWidth="1"
+            >
+              <Row
+                alignItems="center"
+                space={2}
+                justifyContent="flex-start"
+                flex={1}
+                height="100%"
+                width="100%"
+                py={2}
+                pr={2}
+              >
+                <Column flex={1} height="100%" width="100%">
+                  {content}
+                </Column>
+                <Column alignItems="flex-end" marginLeft="auto" height="100%">
+                  {extra}
+                </Column>
+              </Row>
+            </Row>
           </Row>
         </Box>
       </Center>

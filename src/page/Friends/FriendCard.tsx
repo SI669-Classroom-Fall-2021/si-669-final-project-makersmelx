@@ -20,9 +20,13 @@ const Index: React.FC<{ content: IFriend }> = ({ content }) => {
       avatar={
         <LazyLoadImage
           source={{ uri: gravatarUrl(content.gravatar) }}
-          style={{ width: 60, height: 60, borderRadius: 100 }}
+          style={{ width: 50, height: 50, borderRadius: 100 }}
         >
-          <MaterialCommunityIcons name="gift-outline" color="black" size={30} />
+          <MaterialCommunityIcons
+            name="multiple-user"
+            color="black"
+            size={30}
+          />
         </LazyLoadImage>
       }
       content={
