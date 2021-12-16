@@ -2680,6 +2680,11 @@
   resolved "https://registry.npmjs.org/@sideway/pinpoint/-/pinpoint-2.0.0.tgz"
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
+"@types/base-64@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/base-64/-/base-64-1.0.0.tgz#de9c6070ea457fbd65a1b5ebf13976b3ac0bdad0"
+  integrity sha512-AvCJx/HrfYHmOQRFdVvgKMplXfzTUizmh0tz9GFTpDePWgCY4uoKll84zKlaRoeiYiCr7c9ZnqSTzkl0BUVD6g==
+
 "@types/crypto-js@^4.0.2":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.0.2.tgz#4524325a175bf819fec6e42560c389ce1fb92c97"
@@ -3285,6 +3290,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+base-64@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
+  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
 
 base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.5.1:
   version "1.5.1"
@@ -4450,6 +4460,15 @@ expo-font@~10.0.3:
   dependencies:
     expo-modules-core "~0.4.4"
     fontfaceobserver "^2.1.0"
+
+expo-image-picker@~11.0.3:
+  version "11.0.3"
+  resolved "https://registry.npmmirror.com/expo-image-picker/download/expo-image-picker-11.0.3.tgz#c0b6cb9b5fa027f1bd1879a879fe13157f31ac94"
+  integrity sha1-wLbLm1+gJ/G9GHmoef4TFX8xrJQ=
+  dependencies:
+    "@expo/config-plugins" "^4.0.2"
+    expo-modules-core "~0.4.4"
+    uuid "7.0.2"
 
 expo-keep-awake@~10.0.0:
   version "10.0.0"
@@ -8361,6 +8380,11 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+uuid@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.npmmirror.com/uuid/download/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
+  integrity sha1-f/XCA0Z+kfXg2Fz8uq99LrvKm+Y=
 
 uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
