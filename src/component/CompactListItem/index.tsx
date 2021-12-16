@@ -27,7 +27,7 @@ const Index: React.FC<IProps> = ({ onPress, avatar, content, extra }) => (
       <Box ml='auto' width="80%" borderColor="gray.300" borderBottomWidth="1" />
       <Center flex={1}>
         <Box width="95%" py={2}>
-          <Row alignItems="center" space={4} justifyContent="flex-start" flex={1}>
+          <Row alignItems="center" space={2} justifyContent="flex-start" flex={1}>
             <Column>{avatar}</Column>
             <Column flex={1} height="100%" width="100%">
               {content}

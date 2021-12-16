@@ -11,20 +11,20 @@ interface IProps {
 const Index: React.FC<IProps> = ({ content }) => {
   const iconProps = {
     [WishService.WishState.Claimed]: {
-      color: 'success',
+      color: 'success.500',
       as: <MaterialCommunityIcons name="check">
         Claimed
       </MaterialCommunityIcons>
     },
     [WishService.WishState.Completed]: {
-      color: 'muted',
+      color: 'gray.400',
       as: <MaterialCommunityIcons name="gift-outline">
         {' '}
         Completed
       </MaterialCommunityIcons>
     },
     [WishService.WishState.Default]: {
-      color: 'primary',
+      color: 'primary.500',
       as: <MaterialCommunityIcons
         name="dots-horizontal"
       >
@@ -37,7 +37,7 @@ const Index: React.FC<IProps> = ({ content }) => {
     <Text textAlign="left">
       <Icon
         size='14px'
-        color={`${iconProps[content.state].color}.500`}
+        color={iconProps[content.state].color}
         as={iconProps[content.state].as}
       />
     </Text>

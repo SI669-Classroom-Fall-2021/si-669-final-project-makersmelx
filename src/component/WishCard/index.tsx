@@ -47,7 +47,7 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
     content={
       <Column justifyContent="flex-start" space={2}>
         <Text
-          fontWeight="medium"
+          fontWeight="semibold"
           textAlign="left"
           numberOfLines={1}
           fontSize={16}
@@ -58,11 +58,11 @@ const Index: React.FC<IProps> = ({ content, onNavigate }) => (
       </Column>
     }
     extra={
-      <Column justifyContent="flex-start" space={2}>
-        <Text textAlign="right" numberOfLines={1} color="gray.500">
+      <Column justifyContent="flex-start" space={3} height="100%">
+        <Text textAlign="right" numberOfLines={1} color="gray.400">
           {getDate(content)}
         </Text>
-        <Text textAlign="right" numberOfLines={1}>
+        <Text textAlign="right" numberOfLines={1} color="gray.400">
           {`$${content.price}`}
         </Text>
       </Column>
