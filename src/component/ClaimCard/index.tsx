@@ -56,7 +56,7 @@ const Index: React.FC<{ content: IClaim; userID: string }> = ({ content, userID 
             <Row flex={1} justifyContent="flex-end">
               <Button
                 onPress={() => {
-                  ClaimService.completeClaim(userID, content.wisher, content.wishID, content.claimID);
+                  ClaimService.completeClaim(userID, content.wisherID, content.wishID, content.claimID);
                 }}
                 isDisabled={content.state === ClaimService.ClaimState.Completed}
               >

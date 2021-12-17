@@ -42,7 +42,7 @@ const Index: React.FC = () => {
   });
   useEffect(() => {
     (async () => {
-      const wishRef = WishService.getWishRef(content.wisher, content.wishID);
+      const wishRef = WishService.getWishRef(content.wisherID, content.wishID);
       const wishSnap = await getDoc(wishRef);
       const wishInfoTmp = wishSnap.data();
       if (wishInfoTmp) {
@@ -126,7 +126,7 @@ const Index: React.FC = () => {
                 </Link>
               ) : (
                 <Text flex={1} color="muted.500">
-                  {`${content.wisher} has not provided a link yet`}
+                  {`${content.wisherName} has not provided a link yet`}
                 </Text>
               )}
             </Row>

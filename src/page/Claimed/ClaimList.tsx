@@ -70,7 +70,7 @@ const ClaimList: React.FC = () => {
           }}
           onPress={async () => {
             await ClaimService.declaimWish(
-              auth.user.uid, item.wisher, item.wishID, item.claimID);
+              auth.user.uid, item.wisherID, item.wishID, item.claimID);
           }}
           disabled={item.state === ClaimService.ClaimState.Completed}
         >
