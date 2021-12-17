@@ -19,6 +19,7 @@ import { getDoc } from 'firebase/firestore';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
+import { encode } from 'base-64';
 import { ClaimService, IClaim, IWish, WishService } from '../../service';
 import LoadingImageBackground from '../../component/LoadingImageBackground';
 import { useAuth } from '../../auth/AuthProvider';
@@ -43,27 +44,27 @@ const Index: React.FC = () => {
 
   const toast = useToast();
   const sentToast = 'sent-fail-toast';
-
+  const auth = useAuth();
   const fetchWish = useRequest(
     async () => {
       const wishRef = WishService.getWishRef(content.wisherID, content.wishID);
       const wishSnap = await getDoc(wishRef);
       const wishInfoTmp = wishSnap.data();
-      if (wishInfoTmp) {
-        setWishInfo({
-          name: wishInfoTmp.name,
-          url: wishInfoTmp.url,
-          description: wishInfoTmp.description,
-          image: wishInfoTmp.image,
-          price: wishInfoTmp.price,
-          createdAt: wishInfoTmp.createdAt,
-          state: wishInfoTmp.state,
-          key: wishInfoTmp.wishID,
-        });
+      if (!wishInfoTmp) {
+        throw new Error('Fail to fetch the wish');
       }
+      return {
+        ...wishInfoTmp,
+        key: wishInfoTmp.wishID,
+      };
     },
     {
       manual: true,
+      cacheKey: encode(
+        `${content.claimID}${content.wishID}${content.wisherID}${auth.user.uid}`),
+      onSuccess: (data) => {
+        setWishInfo(data as IWish);
+      },
       onError: (error) => {
         toast.show({
           title: error.message,
@@ -88,7 +89,6 @@ const Index: React.FC = () => {
     });
   });
 
-  const auth = useAuth();
   const sentRequest = useRequest(
     async () => {
       if (!auth.user) {
@@ -156,7 +156,7 @@ const Index: React.FC = () => {
   if (fetchWish.loading) {
     return (
       <Center width="100%" height="100%">
-        <Spinner size="lg" color="gray.500" />
+        <Spinner size="lg" color="gray.400" />
       </Center>
     );
   }
