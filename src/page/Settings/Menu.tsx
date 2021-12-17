@@ -70,21 +70,19 @@ const Index: React.FC = () => {
       width="100%"
       height="100%"
       overflow="hidden"
-      borderColor="coolGray.200"
-      borderWidth="1"
       flex={1}
       bg="white"
     >
       <Center width="100%">
         <Row
           alignItems="center"
-          space={4}
-          py="10px"
-          justifyContent="center"
-          width="90%"
+          space={8}
+          py={3}
+          justifyContent="flex-start"
+          width="80%"
           mt={6}
         >
-          <Column flex={0.8}>
+          <Column>
             <Image
               source={{
                 uri: gravatarUrl(auth.profile.gravatar),
@@ -97,15 +95,14 @@ const Index: React.FC = () => {
             />
           </Column>
           <Column
-            flex={2}
             alignItems="flex-start"
             space={2}
             justifyContent="center"
           >
-            <Text fontWeight="600" textAlign="left" {...textProps}>
+            <Text fontWeight="semibold" textAlign="left" {...textProps}>
               {(auth.profile as any).username}
             </Text>
-            <Text fontWeight="600" textAlign="left" {...textProps}>
+            <Text fontWeight="semibold" textAlign="left" {...textProps}>
               {(auth.profile as any).email}
             </Text>
           </Column>
@@ -113,6 +110,7 @@ const Index: React.FC = () => {
         </Row>
         <Divider mt="6" />
         <FlatList
+          mt={6}
           width="100%"
           data={[
             { icon: 'account-circle', title: 'Your Profile' },
@@ -123,12 +121,11 @@ const Index: React.FC = () => {
               <Row
                 alignItems="center"
                 space={4}
-                py="10px"
+                py={4}
                 justifyContent="center"
-                width="90%"
-                mt={4}
+                width="80%"
               >
-                <Column flex={0.8}>
+                <Column>
                   <Center flex={1}>
                     <MaterialCommunityIcons
                       name={item.icon}
@@ -138,12 +135,10 @@ const Index: React.FC = () => {
                   </Center>
                 </Column>
                 <Column
-                  flex={2}
                   alignItems="flex-start"
-                  space={2}
                   justifyContent="center"
                 >
-                  <Text fontWeight="600" textAlign="left" {...textProps}>
+                  <Text fontWeight="semibold" textAlign="left" {...textProps}>
                     {item.title}
                   </Text>
                 </Column>
@@ -152,11 +147,14 @@ const Index: React.FC = () => {
             </Center>
           )}
         />
-        <Divider mt="6" />
+        <Divider mt={6} />
         <Button
           mt={12}
           width="90%"
-          bg="red.500"
+          bg="danger.500"
+          _text={{
+            fontWeight: 'semibold'
+          }}
           isLoading={loading}
           onPress={async () => {
             await signOut();
