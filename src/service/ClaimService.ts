@@ -4,7 +4,8 @@ import WishService from './WishService';
 
 export interface IClaim {
   wishID: string;
-  wisher: string;
+  wisherID: string;
+  wisherName: string;
   state: ClaimState;
   claimedAt: any;
   completedAt: any;
@@ -35,7 +36,8 @@ export default {
       batch.update(wishRef, { state: 1, claimed: userID });
       batch.set(doc(database, collectionName, userID, subCollectionOfUser, wishInfo.key), {
       wishID: wishInfo.key,
-      wisher: wisherInfo.ID,
+      wisherID: wisherInfo.ID,
+      wisherName: wisherInfo.username,
       claimedAt: new Date(),
       state: ClaimState.Default,
       image: wishInfo.image,

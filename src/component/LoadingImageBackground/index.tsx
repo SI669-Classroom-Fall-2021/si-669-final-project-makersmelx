@@ -22,7 +22,7 @@ const Index: React.FC<IProps> = ({ fallback, source, children, ...rest }) => {
       </Center>
     );
     if (!source || !(source as any).uri) {
-      return fallback || spinner;
+      return fallback || children;
     }
     return completed ? children : spinner;
   };

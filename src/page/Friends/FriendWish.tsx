@@ -68,7 +68,7 @@ const Index: React.FC = () => {
     <Center flex={1}>
       <Center height="100%" width="100%" backgroundColor="white">
         <VStack height="100%" width="100%" space={6}>
-          <Center flex={0.8}>
+          <Center flex={0.7}>
             <LoadingImageBackground
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
@@ -137,7 +137,7 @@ const Index: React.FC = () => {
             </Row>
           </Column>
           <Divider />
-          <Center>
+          <Center mt={6}>
             <Button
               width="90%"
               isLoading={loading}
