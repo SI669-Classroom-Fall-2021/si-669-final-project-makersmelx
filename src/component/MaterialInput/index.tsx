@@ -12,7 +12,7 @@ const Index = forwardRef(({ iconName, ...rest }: IProps, ref) => (<Input
   InputLeftElement={<Icon
     as={<MaterialCommunityIcons name={iconName} />}
     size={5}
-    color="muted.400"
+    color="gray.400"
   />}
   {...rest}
   ref={ref}

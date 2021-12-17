@@ -12,7 +12,7 @@ import FormItem from './FormItem';
 
 interface IForm extends IBoxProps {
   space: number;
-  onFinish: (value: any) => void;
+  onFinish?: (value: any) => void;
   onError?: (error: any) => void;
   submitButton?: string | ReactElement;
 }
