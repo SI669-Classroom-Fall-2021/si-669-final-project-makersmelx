@@ -97,7 +97,12 @@ const ClaimList: React.FC = () => {
         data={claimList}
         renderItem={({ item }) => (item.name ? <ClaimCard
           content={item}
-          userID={auth.user.uid}
+          onNavigate={() => {
+            navigation.navigate(
+              'ClaimedFriendWish' as never,
+              { content: item, userID : auth.user.uid } as never
+            );
+          }}
         /> : null)}
         ref={swipeListRef}
         keyExtractor={(item) => item.claimID}

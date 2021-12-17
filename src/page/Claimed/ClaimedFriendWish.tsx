@@ -9,22 +9,25 @@ import {
   Row,
   ScrollView,
   Text,
-  VStack
+  useToast,
+  VStack,
 } from 'native-base';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getDoc } from 'firebase/firestore';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
-import { IClaim, IWish, WishService } from '../../service';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRequest } from 'ahooks';
+import { IClaim, IWish, WishService, ClaimService } from '../../service';
 import LoadingImageBackground from '../../component/LoadingImageBackground';
+import { useAuth } from '../../auth/AuthProvider';
 
 const Index: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const { content }: { content: IClaim } = route.params;
+  const { content, userID }: { content: IClaim; userID: string } = route.params;
+
   const [wishInfo, setWishInfo] = useState<IWish>({
     name: content.name,
     url: '',
@@ -59,6 +62,90 @@ const Index: React.FC = () => {
       }
     })();
   }, []);
+
+  const toast = useToast();
+  const sentToast = 'sent-fail-toast';
+  const unclaimToast = 'unclaim-fail-toast';
+  useLayoutEffect(() => {
+    // todo: should be the friend name
+    navigation.setOptions({
+      title: `${content.name} (${content.wisherName})`,
+    });
+  });
+
+  const auth = useAuth();
+  const sentRequest = useRequest(
+    async () => {
+      if (!auth.user) {
+        throw new Error('Sign In to complete this wish');
+      }
+      await ClaimService.completeClaim(
+        userID,
+        content.wisherID,
+        content.wishID,
+        content.claimID,
+      );
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        navigation.goBack();
+        toast.show({
+          title: `Completed ${content.name} for ${content.wisherName}`,
+          status: 'success',
+          id: sentToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+      onError: (error) => {
+        toast.show({
+          title: error.message,
+          status: 'error',
+          id: sentToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+    },
+  );
+
+  const unClaimRequest = useRequest(
+    async () => {
+      if (!auth.user) {
+        throw new Error('Sign In to unclaim this wish');
+      }
+      await ClaimService.declaimWish(
+        userID,
+        content.wisherID,
+        content.wishID,
+        content.claimID,
+      );
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        navigation.goBack();
+        toast.show({
+          title: `Unclaimed ${content.name} for ${content.wisherName}`,
+          status: 'success',
+          id: sentToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+      onError: (error) => {
+        toast.show({
+          title: error.message,
+          status: 'error',
+          id: sentToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+    },
+  );
+
   return (
     <Center flex={1}>
       <Center height="100%" width="100%" backgroundColor="white">
@@ -140,17 +227,26 @@ const Index: React.FC = () => {
               width="90%"
             >
               <Button
-                leftIcon={<Icon
-                  as={<MaterialCommunityIcons name="gift" />} size="sm"
-                />}
+                onPress={sentRequest.run}
+                isLoading={sentRequest.loading}
+                isDisabled={content.state === ClaimService.ClaimState.Completed}
+                leftIcon={
+                  <Icon as={<MaterialCommunityIcons name="gift" />} size="sm" />
+                }
               >
                 I&apos;ve sent the gift
               </Button>
               <Button
+                onPress={unClaimRequest.run}
+                isLoading={unClaimRequest.loading}
+                isDisabled={content.state === ClaimService.ClaimState.Completed}
                 bg="danger.500"
-                leftIcon={<Icon
-                  as={<MaterialCommunityIcons name="cancel" />} size="sm"
-                />}
+                leftIcon={
+                  <Icon
+                    as={<MaterialCommunityIcons name="cancel" />}
+                    size="sm"
+                  />
+                }
               >
                 Unclaim the wish
               </Button>
