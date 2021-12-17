@@ -18,7 +18,7 @@ const Index = React.forwardRef(
           as={<MaterialIcons name={iconName} />}
           size={5}
           mr="2"
-          color="muted.400"
+          color="gray.400"
         />
       </Pressable>
     );

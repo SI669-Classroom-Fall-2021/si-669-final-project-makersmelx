@@ -3,9 +3,9 @@ import { encode } from 'base-64';
 import { storage } from '../database';
 
 export default {
-  async savePicture(userID: string, picData: { uri: RequestInfo }) {
+  async savePicture(userID: string, uri: string) {
     // get the image data from local storage
-    const response = await fetch(picData.uri);
+    const response = await fetch(uri);
     const imageBlob = await response.blob();
 
     // upload the image data to Storage after creating a unique filename/ID
