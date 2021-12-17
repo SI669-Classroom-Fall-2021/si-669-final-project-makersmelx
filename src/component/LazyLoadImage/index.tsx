@@ -25,7 +25,7 @@ const Index: React.FC<IProps> = ({ source, style, children }) => {
           PlaceholderContent={<Spinner color="gray.500" />}
         />
       ),
-    [fallback],
+    [fallback, Date.now()],
   );
 };
 

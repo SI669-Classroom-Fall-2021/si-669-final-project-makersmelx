@@ -33,7 +33,7 @@ const Index: React.FC<IProps> = ({ fallback, source, children, ...rest }) => {
         {content()}
       </ImageBackground>
     ),
-    [completed],
+    [completed, Date.now()],
   );
 };
 

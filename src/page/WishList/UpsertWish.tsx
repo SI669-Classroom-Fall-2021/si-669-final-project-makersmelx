@@ -18,7 +18,7 @@ import { FormItem } from '../../component/Form';
 import MaterialInput from '../../component/MaterialInput';
 import ImageInput from '../../component/ImageInput';
 import { WishParamList } from './WishParamList';
-import { IWish, WishService } from '../../service';
+import { IWish, PhotoService, WishService } from '../../service';
 import { useAuth } from '../../auth/AuthProvider';
 
 type UpsertRouteProp = RouteProp<WishParamList, 'UpsertWish'>;
@@ -47,13 +47,18 @@ const Index: React.FC = () => {
           ...content,
           ...value,
         } as IWish;
+        newContent.image = await PhotoService.savePicture(
+          auth.user.uid, newContent.image);
         await WishService.update(newContent, auth.user.uid, content.key);
       } else {
+        const cloudUri = value.image ? await PhotoService.savePicture(
+          auth.user.uid, value.image) : '';
+
         const newContent = {
           name: value.name || '',
           url: value.url || '',
           description: value.description || '',
-          image: value.image || '',
+          image: cloudUri,
           price: value.price || '0',
           createdAt: new Date(),
           state: WishService.WishState.Default,
@@ -81,14 +86,7 @@ const Index: React.FC = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackImage: () => (<Icon
-        as={<MaterialCommunityIcons
-          name="send"
-        />}
-        size='sm'
-        color="gray.500"
-      />),
-      title: isEdit ? `Edit my wish` : 'Make a new Wish',
+      title: isEdit ? `Edit wish` : 'Make a new Wish',
       headerRight: () => (
         loading ? <Spinner color="gray.500" size="sm" />
           : <Pressable
