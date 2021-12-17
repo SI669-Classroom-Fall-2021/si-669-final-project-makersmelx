@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
-  Row,
+  Button,
   Center,
+  Column,
+  Divider,
+  Icon,
   Link,
+  Row,
   ScrollView,
   Text,
-  VStack,
-  Column,
-  Button,
-  Divider
+  VStack
 } from 'native-base';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getDoc } from 'firebase/firestore';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { IClaim, IWish, WishService } from '../../service';
 import LoadingImageBackground from '../../component/LoadingImageBackground';
 
 const Index: React.FC = () => {
   const route = useRoute();
-
+  const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const { content }: { content: IClaim } = route.params;
@@ -31,6 +34,11 @@ const Index: React.FC = () => {
     createdAt: '',
     state: 1,
     key: content.wishID,
+  });
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: `Claimed ${content.name}`,
+    });
   });
   useEffect(() => {
     (async () => {
@@ -55,7 +63,7 @@ const Index: React.FC = () => {
     <Center flex={1}>
       <Center height="100%" width="100%" backgroundColor="white">
         <VStack height="100%" width="100%" space={6}>
-          <Center flex={0.8}>
+          <Center flex={0.7}>
             <LoadingImageBackground
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
@@ -123,6 +131,31 @@ const Index: React.FC = () => {
               )}
             </Row>
           </Column>
+          <Divider />
+          <Center>
+            <Row
+              justifyContent="space-around"
+              alignItems="center"
+              mt={6}
+              width="90%"
+            >
+              <Button
+                leftIcon={<Icon
+                  as={<MaterialCommunityIcons name="gift" />} size="sm"
+                />}
+              >
+                I&apos;ve sent the gift
+              </Button>
+              <Button
+                bg="danger.500"
+                leftIcon={<Icon
+                  as={<MaterialCommunityIcons name="cancel" />} size="sm"
+                />}
+              >
+                Unclaim the wish
+              </Button>
+            </Row>
+          </Center>
         </VStack>
       </Center>
     </Center>
