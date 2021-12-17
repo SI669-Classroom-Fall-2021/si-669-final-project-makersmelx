@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box,
+  Row,
   Center,
-  Heading,
-  HStack,
-  Image,
   Link,
   ScrollView,
   Text,
-  VStack
+  VStack,
+  Column,
+  Button,
+  Divider
 } from 'native-base';
 import { useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons
-  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { getDoc } from 'firebase/firestore';
 import { IClaim, IWish, WishService } from '../../service';
+import LoadingImageBackground from '../../component/LoadingImageBackground';
 
 const Index: React.FC = () => {
   const route = useRoute();
@@ -53,72 +53,76 @@ const Index: React.FC = () => {
   }, []);
   return (
     <Center flex={1}>
-      <Center style={{ height: '100%', width: '100%' }} bg="white">
-        <VStack style={{ height: '100%', width: '90%' }}>
-          <HStack
-            flex={0.5}
-            justifyContent="space-between"
-            alignItems="center"
-            mt={6}
-          >
-            <Heading size="lg" textAlign="left" padding={3}>
-              {wishInfo.name}
-            </Heading>
-            <Text fontSize="lg" padding={3}>{`$${wishInfo.price}`}</Text>
-          </HStack>
-
-          <Center flex={3} marginBottom={3} h="30%">
-            <Image
-              size="100%"
+      <Center height="100%" width="100%" backgroundColor="white">
+        <VStack height="100%" width="100%" space={6}>
+          <Center flex={0.8}>
+            <LoadingImageBackground
+              style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
-              mt={6}
               source={{
-                uri: wishInfo.image,
+                uri: content.image,
               }}
-              alt="gift"
-              borderRadius={6}
-              fallbackElement={
-                <MaterialCommunityIcons
-                  name="gift-outline"
-                  color="black"
-                  size={30}
-                />
-              }
-            />
-          </Center>
-          <Box flex={3}>
-            <Box bg="white" paddingX={5} paddingY={3} mt={2}>
-              <ScrollView>
-                <Text>{wishInfo.description}</Text>
-              </ScrollView>
-            </Box>
-            <Box
-              bg="white"
-              paddingX={5}
-              paddingY={3}
-              borderRadius={6}
-              borderColor="gray.200"
-              borderWidth={1}
             >
-              {wishInfo.url ? (
-                <Link
-                  href={wishInfo.url}
-                  isExternal
-                  _text={{
-                    _light: {
-                      color: 'cyan.500',
-                    },
-                    color: 'cyan.300',
-                  }}
-                  isUnderlined
+              <Center flex={1}>
+                <Row
+                  justifyContent="center"
+                  alignItems="center"
+                  width="100%"
+                  mt="auto"
+                  backgroundColor="rgba(0,0,0,0.4)"
                 >
-                  Tap to view in the website
+                  <Row justifyContent="space-between" width="90%" py={2}>
+                    <Text
+                      fontSize="lg"
+                      textAlign="left"
+                      color="white"
+                      fontWeight="800"
+                    >
+                      {content.name}
+                    </Text>
+                    <Text
+                      fontSize="lg"
+                      color="white"
+                      fontWeight="600"
+                    >{`$${content.price}`}</Text>
+                  </Row>
+                </Row>
+              </Center>
+            </LoadingImageBackground>
+          </Center>
+          <Column
+            width="100%"
+            space={6}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <ScrollView width="90%">
+              <Row space={3} alignItems="flex-start">
+                <MaterialIcons name="description" size={24} />
+                <Text textAlign="left" width="90%">
+                  {wishInfo.description}
+                </Text>
+              </Row>
+            </ScrollView>
+            <Divider />
+            <Row width="90%" space={3}>
+              <MaterialIcons
+                name={wishInfo.url ? 'public' : 'public-off'}
+                size={24}
+              />
+              {wishInfo.url ? (
+                <Link href={wishInfo.url} isExternal flex={1}>
+                  <Text numberOfLines={1} underline color="cyan.500">
+                    {wishInfo.url}
+                  </Text>
                 </Link>
               ) : (
-                <Text>No link</Text>
+                <Text flex={1} color="muted.500">
+                  {`${content.wisher} has not provided a link yet`}
+                </Text>
               )}
-            </Box>
-          </Box>
+            </Row>
+          </Column>
         </VStack>
       </Center>
     </Center>
