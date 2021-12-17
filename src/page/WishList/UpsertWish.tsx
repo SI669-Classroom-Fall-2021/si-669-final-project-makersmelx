@@ -48,7 +48,7 @@ const Index: React.FC = () => {
           ...value,
         } as IWish;
         newContent.image = await PhotoService.savePicture(
-          auth.user.uid, newContent.image);
+          auth.user.uid, {uri: newContent.image});
         await WishService.update(newContent, auth.user.uid, content.key);
       } else {
         const cloudUri = value.image ? await PhotoService.savePicture(
