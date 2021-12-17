@@ -76,10 +76,10 @@ const Index: React.FC = () => {
       <Center width="100%">
         <Row
           alignItems="center"
-          space={8}
+          space={6}
           py={3}
           justifyContent="flex-start"
-          width="80%"
+          width="90%"
           mt={6}
         >
           <Column>
@@ -88,8 +88,8 @@ const Index: React.FC = () => {
                 uri: gravatarUrl(auth.profile.gravatar),
               }}
               style={{
-                width: 60,
-                height: 60,
+                width: 50,
+                height: 50,
                 borderRadius: 100
               }}
             />
@@ -120,9 +120,9 @@ const Index: React.FC = () => {
             <Center width="100%">
               <Row
                 alignItems="center"
-                space={4}
+                space={6}
                 py={4}
-                justifyContent="center"
+                justifyContent="flex-start"
                 width="80%"
               >
                 <Column>
