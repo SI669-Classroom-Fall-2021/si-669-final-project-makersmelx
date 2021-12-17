@@ -8,6 +8,7 @@ import {
   Link,
   Row,
   ScrollView,
+  Spinner,
   Text,
   useToast,
   VStack,
@@ -15,9 +16,10 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getDoc } from 'firebase/firestore';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons
+  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRequest } from 'ahooks';
-import { IClaim, IWish, WishService, ClaimService } from '../../service';
+import { ClaimService, IClaim, IWish, WishService } from '../../service';
 import LoadingImageBackground from '../../component/LoadingImageBackground';
 import { useAuth } from '../../auth/AuthProvider';
 
@@ -38,13 +40,12 @@ const Index: React.FC = () => {
     state: 1,
     key: content.wishID,
   });
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Claimed ${content.name}`,
-    });
-  });
-  useEffect(() => {
-    (async () => {
+
+  const toast = useToast();
+  const sentToast = 'sent-fail-toast';
+
+  const fetchWish = useRequest(
+    async () => {
       const wishRef = WishService.getWishRef(content.wisherID, content.wishID);
       const wishSnap = await getDoc(wishRef);
       const wishInfoTmp = wishSnap.data();
@@ -60,14 +61,28 @@ const Index: React.FC = () => {
           key: wishInfoTmp.wishID,
         });
       }
+    },
+    {
+      manual: true,
+      onError: (error) => {
+        toast.show({
+          title: error.message,
+          status: 'error',
+          id: sentToast,
+          placement: 'top',
+          duration: 3000,
+        });
+      },
+    },
+  );
+
+  useEffect(() => {
+    (async () => {
+      await fetchWish.run();
     })();
   }, []);
 
-  const toast = useToast();
-  const sentToast = 'sent-fail-toast';
-  const unclaimToast = 'unclaim-fail-toast';
   useLayoutEffect(() => {
-    // todo: should be the friend name
     navigation.setOptions({
       title: `${content.name} (${content.wisherName})`,
     });
@@ -80,11 +95,7 @@ const Index: React.FC = () => {
         throw new Error('Sign In to complete this wish');
       }
       await ClaimService.completeClaim(
-        userID,
-        content.wisherID,
-        content.wishID,
-        content.claimID,
-      );
+        userID, content.wisherID, content.wishID, content.claimID);
     },
     {
       manual: true,
@@ -116,11 +127,7 @@ const Index: React.FC = () => {
         throw new Error('Sign In to unclaim this wish');
       }
       await ClaimService.declaimWish(
-        userID,
-        content.wisherID,
-        content.wishID,
-        content.claimID,
-      );
+        userID, content.wisherID, content.wishID, content.claimID);
     },
     {
       manual: true,
@@ -146,11 +153,19 @@ const Index: React.FC = () => {
     },
   );
 
+  if (fetchWish.loading) {
+    return (
+      <Center width="100%" height="100%">
+        <Spinner size="lg" color="gray.500" />
+      </Center>
+    );
+  }
+
   return (
     <Center flex={1}>
       <Center height="100%" width="100%" backgroundColor="white">
         <VStack height="100%" width="100%" space={6}>
-          <Center flex={0.7}>
+          <Center flex={0.8}>
             <LoadingImageBackground
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
@@ -191,6 +206,13 @@ const Index: React.FC = () => {
             alignItems="center"
             justifyContent="center"
           >
+            <Row width="90%" space={3}>
+              <MaterialCommunityIcons name="account-multiple" size={24} />
+              <Text flex={1} fontWeight="semibold">
+                {content.wisherName}
+              </Text>
+            </Row>
+            <Divider />
             <ScrollView width="90%">
               <Row space={3} alignItems="flex-start">
                 <MaterialIcons name="description" size={24} />
@@ -230,9 +252,10 @@ const Index: React.FC = () => {
                 onPress={sentRequest.run}
                 isLoading={sentRequest.loading}
                 isDisabled={content.state === ClaimService.ClaimState.Completed}
-                leftIcon={
-                  <Icon as={<MaterialCommunityIcons name="gift" />} size="sm" />
-                }
+                leftIcon={<Icon
+                  as={<MaterialCommunityIcons name="gift" />}
+                  size="sm"
+                />}
               >
                 I&apos;ve sent the gift
               </Button>
@@ -241,12 +264,10 @@ const Index: React.FC = () => {
                 isLoading={unClaimRequest.loading}
                 isDisabled={content.state === ClaimService.ClaimState.Completed}
                 bg="danger.500"
-                leftIcon={
-                  <Icon
-                    as={<MaterialCommunityIcons name="cancel" />}
-                    size="sm"
-                  />
-                }
+                leftIcon={<Icon
+                  as={<MaterialCommunityIcons name="cancel" />}
+                  size="sm"
+                />}
               >
                 Unclaim the wish
               </Button>
