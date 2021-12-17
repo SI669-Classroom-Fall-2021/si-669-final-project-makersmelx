@@ -1,6 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, Center, HStack, Pressable, Text, VStack } from 'native-base';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { Box, FlatList, Pressable } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons
   from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,47 +52,9 @@ const ClaimList: React.FC = () => {
     });
   });
 
-  const renderHiddenItem: React.FC<{ item: IClaim }> = ({ item }) =>
-    item.name ? (
-      <HStack flex="1" pl="2">
-        <VStack w="0" ml="auto" />
-        <Pressable
-          w="100"
-          bg={item.state === ClaimService.ClaimState.Completed
-            ? 'gray.500'
-            : 'red.500'}
-          _pressed={{
-            opacity: 0.5,
-          }}
-          _disabled={{
-            opacity: 0.5,
-          }}
-          onPress={async () => {
-            await ClaimService.declaimWish(
-              auth.user.uid, item.wisherID, item.wishID, item.claimID);
-          }}
-          disabled={item.state === ClaimService.ClaimState.Completed}
-        >
-          <Center flex={1}>
-            <VStack alignItems="center">
-              <MaterialCommunityIcons name="delete" color="white" size={30} />
-              <Text
-                color="white"
-                fontSize={16}
-                fontWeight="medium"
-                textAlign="center"
-              >
-                Decline
-              </Text>
-            </VStack>
-          </Center>
-        </Pressable>
-      </HStack>
-    ) : null;
-
   return (
     <Box style={{ width: '100%', height: '100%' }} flex={1}>
-      <SwipeListView
+      <FlatList
         data={claimList}
         renderItem={({ item }) => (item.name ? <ClaimCard
           content={item}
@@ -106,14 +67,6 @@ const ClaimList: React.FC = () => {
         /> : null)}
         ref={swipeListRef}
         keyExtractor={(item) => item.claimID}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-100}
-        previewRowKey="0"
-        previewOpenValue={-50}
-        previewOpenDelay={3000}
-        closeOnRowBeginSwipe
-        disableRightSwipe
-        closeOnRowOpen={false}
       />
     </Box>
   );
